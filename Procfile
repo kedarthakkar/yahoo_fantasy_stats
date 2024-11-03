@@ -1,0 +1,1 @@
+web: python yahoo_script.py
