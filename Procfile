@@ -1,1 +1,1 @@
-web: python yahoo_script.py
+web: gunicorn app:app --log-file -

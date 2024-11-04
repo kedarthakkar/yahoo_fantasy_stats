@@ -5,6 +5,11 @@ import statistics
 from datetime import datetime
 import os
 import json 
+import logging 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
 app = Flask(__name__)
 
@@ -22,6 +27,8 @@ def get_fantasy_stats():
         
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
+
+        logger.info("MADE IT HERE")
         
         # Get the league ID for the current season
         current_year = datetime.now().year
