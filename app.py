@@ -24,7 +24,8 @@ def get_fantasy_stats():
 
         with open('oauth.json', 'w') as f:
             json.dump(oauth_creds, f)
-            sc = OAuth2(None, None, from_file='oauth.json')
+            
+        sc = OAuth2(None, None, from_file='oauth.json')
         
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
