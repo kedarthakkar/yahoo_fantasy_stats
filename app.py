@@ -23,6 +23,7 @@ def get_fantasy_stats():
         }
 
         with open('oauth.json', 'w') as f:
+            logger.info(oauth_creds['consumer_key'])
             json.dump(oauth_creds, f)
         sc = OAuth2(None, None, from_file='oauth.json')
         
