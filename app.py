@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, request, session
 from yahoo_oauth import OAuth2
 import yahoo_fantasy_api as yfa
 import statistics
@@ -8,17 +8,64 @@ import json
 import logging 
 import sys
 
+app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev')  # Add a secret key for sessions
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
-app = Flask(__name__)
+def get_oauth_session():
+    """Get or create OAuth session"""
+    if 'oauth_token' not in session:
+        return None
+    
+    try:
+        sc = OAuth2(os.getenv('CONSUMER_KEY'), 
+                   os.getenv('CONSUMER_SECRET'),
+                   token_dict=session['oauth_token'])
+        return sc
+    except Exception as e:
+        logger.error(f"Error creating OAuth session: {e}")
+        return None
+
+@app.route('/auth')
+def auth():
+    """Start OAuth flow"""
+    sc = OAuth2(os.getenv('CONSUMER_KEY'), 
+                os.getenv('CONSUMER_SECRET'),
+                browser_callback=True)
+    return redirect(sc.get_authorization_url())
+
+@app.route('/callback')
+def callback():
+    """Handle OAuth callback"""
+    try:
+        code = request.args.get('code')
+        if not code:
+            return "No code provided", 400
+
+        sc = OAuth2(os.getenv('CONSUMER_KEY'), 
+                   os.getenv('CONSUMER_SECRET'),
+                   browser_callback=True)
+        
+        # Get token using the authorization code
+        token = sc.get_token(code)
+        session['oauth_token'] = token
+        
+        return redirect('/')
+    except Exception as e:
+        logger.error(f"Callback error: {e}")
+        return str(e), 500
 
 def get_fantasy_stats():
     try:
-        # Authenticate with Yahoo
-        sc = OAuth2(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'))
-        
+        # Get OAuth session
+        sc = get_oauth_session()
+        if not sc:
+            return {"success": False, "error": "Not authenticated", "needs_auth": True}
+
+        # Rest of your existing get_fantasy_stats code...
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
 
@@ -66,10 +113,13 @@ def get_fantasy_stats():
         
         return {"success": True, "data": results}
     except Exception as e:
+        logger.error(f"Error in get_fantasy_stats: {e}")
         return {"success": False, "error": str(e)}
 
 @app.route('/')
 def home():
+    if 'oauth_token' not in session:
+        return render_template('index.html', needs_auth=True)
     return render_template('index.html')
 
 @app.route('/api/stats')
