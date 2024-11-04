@@ -3,4 +3,3 @@ yahoo_oauth
 statistics
 flask
 black
-gunicorn
