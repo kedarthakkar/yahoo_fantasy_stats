@@ -17,15 +17,7 @@ app = Flask(__name__)
 def get_fantasy_stats():
     try:
         # Authenticate with Yahoo
-        oauth_creds = {
-            'consumer_key': os.getenv('CONSUMER_KEY'),
-            'consumer_secret': os.getenv('CONSUMER_SECRET'),
-        }
-
-        with open('oauth.json', 'w') as f:
-            json.dump(oauth_creds, f)
-            
-        sc = OAuth2(None, None, from_file='oauth.json')
+        sc = OAuth2(os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'))
         
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
