@@ -15,27 +15,52 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
-def get_oauth_session():
-    """Get or create OAuth session"""
-    if 'oauth_token' not in session:
-        return None
-    
-    try:
-        sc = OAuth2(os.getenv('CONSUMER_KEY'), 
-                   os.getenv('CONSUMER_SECRET'),
-                   token_dict=session['oauth_token'])
-        return sc
-    except Exception as e:
-        logger.error(f"Error creating OAuth session: {e}")
-        return None
+# OAuth configuration
+YAHOO_AUTH_URL = "https://api.login.yahoo.com/oauth2/request_auth"
+YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
+CLIENT_ID = os.getenv('CONSUMER_KEY')
+CLIENT_SECRET = os.getenv('CONSUMER_SECRET')
+REDIRECT_URI = os.getenv('REDIRECT_URI', 'https://your-heroku-app.herokuapp.com/callback')
 
 @app.route('/auth')
-def auth():
-    """Start OAuth flow"""
-    sc = OAuth2(os.getenv('CONSUMER_KEY'), 
-                os.getenv('CONSUMER_SECRET'),
-                browser_callback=True)
-    return redirect(sc.get_authorization_url())
+def handle_oauth():
+    """Initialize and handle OAuth2 authentication with Yahoo"""
+    try:
+        # Create new OAuth session
+        oauth = OAuth2(
+            CLIENT_ID, 
+            CLIENT_SECRET
+        )
+        
+        if not oauth.token_is_valid():
+            oauth.refresh_access_token()
+            
+        return oauth
+
+    except Exception as e:
+        logger.error(f"OAuth handling error: {e}")
+        return None
+
+# def get_oauth_session():
+#     """Get or create OAuth session"""
+#     if 'oauth_token' not in session:
+#         return None
+    
+#     try:
+#         sc = OAuth2(os.getenv('CONSUMER_KEY'), 
+#                    os.getenv('CONSUMER_SECRET'),
+#                    token_dict=session['oauth_token'])
+#         return sc
+#     except Exception as e:
+#         logger.error(f"Error creating OAuth session: {e}")
+#         return None
+
+# def auth():
+#     """Start OAuth flow"""
+#     sc = OAuth2(os.getenv('CONSUMER_KEY'), 
+#                 os.getenv('CONSUMER_SECRET'),
+#                 browser_callback=True)
+#     return redirect(sc.get_authorization_url())
 
 @app.route('/callback')
 def callback():
