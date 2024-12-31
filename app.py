@@ -131,9 +131,12 @@ def get_stats():
 
 @app.route("/team_list")
 def get_team_list():
-    return render_template("team_list.html")
-    # team_list = get_fantasy_team_list()
-    # return jsonify(team_list)
+    team_list = get_fantasy_team_list()
+    return render_template(
+        "team_list.html",
+        teams=team_list["data"]["team_names"],
+        logos=team_list["data"]["team_logos"],
+    )
 
 
 if __name__ == "__main__":
