@@ -59,6 +59,7 @@ class YahooAPI:
         for team in teams_data['fantasy_content']['league'][1]['teams']:
             if isinstance(team, dict):
                 team_name = team['team'][0][2]['name']
+                logger.info('team_name: ' + str(team_name))
                 teams[team_name] = []
         
         logger.info('teams 1: ' + str(teams))
