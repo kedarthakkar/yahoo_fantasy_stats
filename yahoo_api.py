@@ -65,10 +65,11 @@ class YahooAPI:
             scores_response.raise_for_status()
             scores_data = scores_response.json()
             matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups']
-            logger.info(matchups)
             for i in range(int(matchups['count'])):
+                logger.info(matchups)
+                logger.info(type(matchups))
+                logger.info(matchups.keys())
                 matchup = matchups[str(i)]['matchup']
-                logger.info(matchup)
                 logger.info("MADE IT" + str(i))
 
                 for team in matchup['0']['teams'].values(): 
