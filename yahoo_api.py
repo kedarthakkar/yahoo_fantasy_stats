@@ -103,5 +103,15 @@ class YahooAPI:
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
         teams_data = teams_response.json()
-        logger.info(teams_data)
-        return teams_data
+
+        team_names = []
+        team_logos = []
+        for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
+            if isinstance(team, dict):
+                team_name = team["team"][0][2]["name"]
+                team_names.append(team_name)
+                team_logos.append(
+                    team["team"][0][5]["team_logos"][0]["team_logo"]["url"]
+                )
+
+        return team_names, team_logos
