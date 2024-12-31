@@ -98,6 +98,9 @@ class YahooAPI:
         return results
 
     def get_team_list(self):
+        """
+        Returns a list of team names and a list of URLs of team logos.
+        """
         # Get teams in league
         teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
         teams_response = requests.get(teams_url, headers=self.headers)

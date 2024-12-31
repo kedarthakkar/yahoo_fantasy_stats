@@ -106,8 +106,8 @@ def get_fantasy_team_list():
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
 
         yahoo = YahooAPI(session["access_token"])
-        results = yahoo.get_team_list()
-        return {"success": True, "data": results}
+        team_names, team_logos = yahoo.get_team_list()
+        return {"success": True, "data": {"team_names": team_names, "team_logos": team_logos}}
     except Exception as e:
         logger.error(f"Error in get_team_list: {e}")
         return {"success": False, "error": str(e)}
@@ -131,8 +131,9 @@ def get_stats():
 
 @app.route("/team_list")
 def get_team_list():
-    team_list = get_fantasy_team_list()
-    return jsonify(team_list)
+    return render_template("team_list.html")
+    # team_list = get_fantasy_team_list()
+    # return jsonify(team_list)
 
 
 if __name__ == "__main__":

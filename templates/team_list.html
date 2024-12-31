@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Team Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #e5e5e5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .team-list {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #eee;
+        }
+
+        .team-item:last-child {
+            border-bottom: none;
+        }
+
+        .team-item:hover {
+            background-color: #f8f8f8;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .team-name {
+            font-size: 1.2em;
+            color: #333;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .team-item {
+                padding: 10px 15px;
+            }
+
+            .team-logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 15px;
+            }
+
+            .team-name {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Fantasy Team</h1>
+        <div class="team-list" id="teamList"></div>
+    </div>
+
+    <script>
+        // Simulate the get_team_list function
+        function get_team_list() {
+            return {
+                teams: ["Dragons", "Phoenix", "Knights", "Warriors", "Wizards", "Giants"],
+                logos: [
+                    "/api/placeholder/60/60",
+                    "/api/placeholder/60/60",
+                    "/api/placeholder/60/60",
+                    "/api/placeholder/60/60",
+                    "/api/placeholder/60/60",
+                    "/api/placeholder/60/60"
+                ]
+            };
+        }
+
+        function createTeamList() {
+            const { teams, logos } = get_team_list();
+            const teamList = document.getElementById('teamList');
+
+            teams.forEach((team, index) => {
+                const item = document.createElement('div');
+                item.className = 'team-item';
+                item.innerHTML = `
+                    <img src="${logos[index]}" alt="${team} logo" class="team-logo">
+                    <div class="team-name">${team}</div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    // Convert team name to URL-friendly format
+                    const teamSlug = team.toLowerCase().replace(/\s+/g, '-');
+                    window.location.href = `/team/${teamSlug}`;
+                });
+
+                teamList.appendChild(item);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', createTeamList);
+    </script>
+</body>
+</html>
