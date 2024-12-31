@@ -83,12 +83,6 @@ def callback():
 
 def get_fantasy_stats():
     try:
-        # Get OAuth session
-        sc = get_oauth_session()
-        if not sc:
-            return {"success": False, "error": "Not authenticated", "needs_auth": True}
-
-        # Rest of your existing get_fantasy_stats code...
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
 
