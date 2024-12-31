@@ -103,8 +103,11 @@ def get_fantasy_stats():
         )
         
         # Create game object with the OAuth instance
-        game = yfa.Game(sc, "nfl")
-
+        headers = {
+            'Authorization': f"Bearer {session['access_token']}"
+        }
+        game = requests.get("https://fantasysports.yahooapis.com/fantasy/v2/game/nfl", headers=headers)
+        logger.info(game.json())
         logger.info("MADE IT HERE")
         
         # Get the league ID for the current season
