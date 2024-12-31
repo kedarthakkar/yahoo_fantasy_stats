@@ -67,22 +67,28 @@ def callback():
         logger.error(f"Callback error: {e}")
         return str(e), 500
 
-# def get_oauth_session():
-#     """Get or create OAuth session"""
-#     if 'oauth_token' not in session:
-#         return None
+def get_oauth_session():
+    """Get or create OAuth session"""
+    if 'access_token' not in session:
+        return None
     
-#     try:
-#         sc = OAuth2(os.getenv('CONSUMER_KEY'), 
-#                    os.getenv('CONSUMER_SECRET'),
-#                    token_dict=session['oauth_token'])
-#         return sc
-#     except Exception as e:
-#         logger.error(f"Error creating OAuth session: {e}")
-#         return None
+    try:
+        sc = OAuth2(
+            CLIENT_ID, 
+            CLIENT_SECRET,
+            token_dict=session['access_token']
+        )
+        return sc
+    except Exception as e:
+        logger.error(f"Error creating OAuth session: {e}")
+        return None
 
 def get_fantasy_stats():
     try:
+        sc = get_oauth_session()
+        if not sc:
+            return {"success": False, "error": "Not authenticated", "needs_auth": True}
+
         # Create a Game object for NFL
         game = yfa.Game(sc, "nfl")
 
