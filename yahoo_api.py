@@ -76,7 +76,9 @@ class YahooAPI:
                     logger.info(teams[team_name])
                     teams[team_name].append(team_score)
 
-        logger.info('teams 2: ' + str(teams))
+                    logger.info(teams)
+
+        logger.info(teams)
         
         # Calculate statistics
         results = {}
