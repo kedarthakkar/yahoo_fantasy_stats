@@ -25,21 +25,30 @@ REDIRECT_URI = os.getenv('REDIRECT_URI', 'https://your-heroku-app.herokuapp.com/
 @app.route('/auth')
 def handle_oauth():
     """Initialize and handle OAuth2 authentication with Yahoo"""
-    try:
-        # Create new OAuth session
-        oauth = OAuth2(
-            CLIENT_ID, 
-            CLIENT_SECRET
-        )
+    auth_params = {
+        'client_id': CLIENT_ID,
+        'redirect_uri': REDIRECT_URI,
+        'response_type': 'code',
+        'scope': 'fspt-w'
+    }
+    
+    auth_url = f"{YAHOO_AUTH_URL}?" + "&".join(f"{k}={v}" for k, v in auth_params.items())
+    return redirect(auth_url)
+    # try:
+    #     # Create new OAuth session
+    #     oauth = OAuth2(
+    #         CLIENT_ID, 
+    #         CLIENT_SECRET
+    #     )
         
-        if not oauth.token_is_valid():
-            oauth.refresh_access_token()
+    #     if not oauth.token_is_valid():
+    #         oauth.refresh_access_token()
             
-        return oauth
+    #     return oauth
 
-    except Exception as e:
-        logger.error(f"OAuth handling error: {e}")
-        return None
+    # except Exception as e:
+    #     logger.error(f"OAuth handling error: {e}")
+    #     return None
 
 # def get_oauth_session():
 #     """Get or create OAuth session"""
