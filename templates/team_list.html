@@ -87,7 +87,7 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-8 text-center">Select Your Fantasy Team</h1>
 
-        {% if needs_auth %}
+        <!-- {% if needs_auth %} -->
         <div id="auth-required" class="hidden text-center py-8">
             <p class="text-lg mb-4">Please authenticate with Yahoo to view your stats</p>
             <a href="/auth" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -99,16 +99,16 @@
         </div>
         <div id="error" class="hidden text-red-600 text-center py-8">
         </div>
-        {% else %}
-        <div class="team-list" id="teamList">
+        <!-- {% else %} -->
+        <!-- <div class="team-list" id="teamList">
             {% for name, logo in team_info %}
             <div class="team-item" onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
                 <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo">
                 <div class="team-name">{{ name }}</div>
             </div>
             {% endfor %}
-        </div>
-        {% endif %}
+        </div> -->
+        <!-- {% endif %} -->
     </div>
 </body>
 </html>
