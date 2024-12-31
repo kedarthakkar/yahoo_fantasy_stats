@@ -97,7 +97,7 @@ def get_fantasy_stats():
         logger.error(f"Error in get_fantasy_stats: {e}")
         return {"success": False, "error": str(e)}
 
-def get_team_list():
+def get_fantasy_team_list():
     """
     Call YahooAPI class to get team list.
     """
@@ -131,7 +131,7 @@ def get_stats():
 
 @app.route("/team_list")
 def get_team_list():
-    team_list = get_team_list()
+    team_list = get_fantasy_team_list()
     return jsonify(team_list)
 
 
