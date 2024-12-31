@@ -135,7 +135,7 @@ def get_fantasy_stats():
 
 @app.route('/')
 def home():
-    if 'oauth_token' not in session:
+    if 'access_token' not in session:
         return render_template('index.html', needs_auth=True)
     return render_template('index.html')
 
