@@ -25,6 +25,7 @@ REDIRECT_URI = "https://fantasy-wrapped-e5f08855da35.herokuapp.com/callback"
 CLIENT_ID = os.getenv("CONSUMER_KEY")
 CLIENT_SECRET = os.getenv("CONSUMER_SECRET")
 
+# TODO: Properly handle refresh token (currently the application fails if the access token expires)
 
 @app.route("/auth")
 def handle_oauth():
