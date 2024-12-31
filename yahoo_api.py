@@ -67,12 +67,10 @@ class YahooAPI:
             matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups'] 
             for i in range(int(matchups['count'])):
                 matchup = matchups[str(i)]['matchup']
-                logger.info(matchup['0']['teams'])
-                for v in matchup['0']['teams'].values():
-                    logger.info('v: ' + str(v))
-                    # logger.info('team: ' + str(team))
-                    # logger.info('team type: ' + str(type(team)))
+                for team in matchup['0']['teams'].values(): 
                     team_name = team['team'][0][2]['name']
+                    logger.info(team_name)
+                    logger.info(team['team'][1])
                     team_score = float(team['team'][1]['team_points']['total'])
                     teams[team_name].append(team_score)
 
