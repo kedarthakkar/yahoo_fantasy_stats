@@ -134,8 +134,7 @@ def get_team_list():
     team_list = get_fantasy_team_list()
     return render_template(
         "team_list.html",
-        teams=team_list["data"]["team_names"],
-        logos=team_list["data"]["team_logos"],
+        team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
     )
 
 

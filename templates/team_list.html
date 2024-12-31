@@ -87,7 +87,7 @@
     <div class="container">
         <h1>Select Your Fantasy Team</h1>
         <div class="team-list" id="teamList">
-            {% for name, logo in zip(team_names, team_logos) %}
+            {% for name, logo in team_info %}
             <div class="team-item" onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
                 <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo">
                 <div class="team-name">{{ name }}</div>
