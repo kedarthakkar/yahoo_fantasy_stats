@@ -58,8 +58,7 @@ def callback():
             return "Authentication failed", 500
             
         token_info = response.json()
-        session['access_token'] = token_info['access_token']
-        session['refresh_token'] = token_info.get('refresh_token')
+        session['token_info'] = token_info
         
         return redirect(url_for('home'))
         
@@ -69,14 +68,14 @@ def callback():
 
 def get_oauth_session():
     """Get or create OAuth session"""
-    if 'access_token' not in session:
+    if 'token_info' not in session:
         return None
     
     try:
         sc = OAuth2(
             CLIENT_ID, 
             CLIENT_SECRET,
-            token_dict=session['access_token']
+            token_dict=session['token_info']
         )
         return sc
     except Exception as e:
@@ -141,7 +140,7 @@ def get_fantasy_stats():
 
 @app.route('/')
 def home():
-    if 'access_token' not in session:
+    if 'token_info' not in session:
         return render_template('index.html', needs_auth=True)
     return render_template('index.html')
 
