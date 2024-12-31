@@ -71,9 +71,9 @@ class YahooAPI:
 
                 for team in matchup['0']['teams'].values():
                     if isinstance(team, dict):
-                    team_name = team['team'][0][2]['name']
-                    team_score = float(team['team'][1]['team_points']['total'])
-                    teams[team_name].append(team_score)
+                        team_name = team['team'][0][2]['name']
+                        team_score = float(team['team'][1]['team_points']['total'])
+                        teams[team_name].append(team_score)
 
                 logger.info("END OF LOOP" + str(i))
 
