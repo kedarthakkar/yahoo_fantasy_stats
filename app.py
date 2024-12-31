@@ -9,7 +9,7 @@ import logging
 import requests
 import sys
 import time
-
+from yahoo_api import YahooAPI
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev")  # Add a secret key for sessions
 
@@ -80,75 +80,13 @@ def callback():
 
 def get_fantasy_stats():
     try:
-        if "access_token" not in session:
+        if 'access_token' not in session:
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
-
-        headers = {
-            "Authorization": f'Bearer {session["access_token"]}',
-            "Accept": "application/json",
-        }
-        leagues_data = requests.get(
-            "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nfl/leagues?format=json",
-            headers=headers,
-        )
-        logger.info(leagues_data.json())
-        league_key = leagues_data.json()["fantasy_content"]["users"]["0"]["user"][1][
-            "games"
-        ]["0"]["game"][1]["leagues"]["0"]["league"][0]["league_key"]
-        logger.info(league_key)
-        # try:
-        #     if 'access_token' not in session:
-        #         return {"success": False, "error": "Not authenticated", "needs_auth": True}
-
-        #     # Create game object with the OAuth instance
-        #     headers = {
-        #         'Authorization': f"Bearer {session['access_token']}"
-        #     }
-        #     game = requests.get("https://fantasysports.yahooapis.com/fantasy/v2/game/nfl", headers=headers)
-        #     logger.info(game.json())
-        #     logger.info("MADE IT HERE")
-
-        #     # Get the league ID for the current season
-        #     current_year = datetime.now().year
-        #     league_id = game.league_ids(year=current_year)[0]
-
-        #     # Create a League object
-        #     league = game.to_league(league_id)
-
-        #     # Get all teams in the league
-        #     teams = league.teams()
-
-        #     # Dictionary to store team scores
-        #     team_scores = {team["name"]: [] for team in teams.values()}
-
-        #     # Get the current week
-        #     current_week = league.current_week()
-
-        #     # Collect scores for each week
-        #     for week in range(1, current_week):
-        #         scores = league.matchups(week=week)["fantasy_content"]["league"][1]["scoreboard"]["0"]["matchups"]
-        #         # Iterate over each matchup
-        #         for i in range(scores["count"]):
-        #             team_1_name = scores[str(i)]["matchup"]["0"]["teams"]["0"]["team"][0][2]["name"]
-        #             team_2_name = scores[str(i)]["matchup"]["0"]["teams"]["1"]["team"][0][2]["name"]
-        #             team_1_score = float(scores[str(i)]["matchup"]["0"]["teams"]["0"]["team"][1]["team_points"]["total"])
-        #             team_2_score = float(scores[str(i)]["matchup"]["0"]["teams"]["1"]["team"][1]["team_points"]["total"])
-        #             team_scores[team_1_name].append(team_1_score)
-        #             team_scores[team_2_name].append(team_2_score)
-
-        #     # Calculate statistics for each team
-        #     results = {}
-        #     for team_name, scores in team_scores.items():
-        #         results[team_name] = {
-        #             "mean": statistics.mean(scores),
-        #             "median": statistics.median(scores),
-        #             "stdev": statistics.stdev(scores),
-        #             "scores": scores,  # Include individual scores for visualization
-        #             "max": max(scores),
-        #             "min": min(scores)
-        #         }
-
+        
+        yahoo = YahooAPI(session['access_token'])
+        results = yahoo.get_league_data()
         return {"success": True, "data": results}
+        
     except Exception as e:
         logger.error(f"Error in get_fantasy_stats: {e}")
         return {"success": False, "error": str(e)}
