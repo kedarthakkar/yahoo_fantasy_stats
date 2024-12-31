@@ -86,49 +86,14 @@
 <body>
     <div class="container">
         <h1>Select Your Fantasy Team</h1>
-        <div class="team-list" id="teamList"></div>
+        <div class="team-list" id="teamList">
+            {% for name, logo in zip(team_names, team_logos) %}
+            <div class="team-item" onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
+                <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo">
+                <div class="team-name">{{ name }}</div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-
-    <script>
-        // Simulate the get_team_list function
-        // function get_team_list() {
-        //     return {
-        //         teams: ["Dragons", "Phoenix", "Knights", "Warriors", "Wizards", "Giants"],
-        //         logos: [
-        //             "/api/placeholder/60/60",
-        //             "/api/placeholder/60/60",
-        //             "/api/placeholder/60/60",
-        //             "/api/placeholder/60/60",
-        //             "/api/placeholder/60/60",
-        //             "/api/placeholder/60/60"
-        //         ]
-        //     };
-        // }
-
-        function createTeamList() {
-            const { teams, logos } = get_team_list();
-            const teamList = document.getElementById('teamList');
-
-            teams.forEach((team, index) => {
-                const item = document.createElement('div');
-                item.className = 'team-item';
-                item.innerHTML = `
-                    <img src="${logos[index]}" alt="${team} logo" class="team-logo">
-                    <div class="team-name">${team}</div>
-                `;
-                
-                item.addEventListener('click', () => {
-                    // Convert team name to URL-friendly format
-                    const teamSlug = team.toLowerCase().replace(/\s+/g, '-');
-                    window.location.href = `/team/${teamSlug}`;
-                });
-
-                teamList.appendChild(item);
-            });
-        }
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', createTeamList);
-    </script>
 </body>
 </html>
