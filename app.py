@@ -27,6 +27,7 @@ CLIENT_SECRET = os.getenv("CONSUMER_SECRET")
 
 # TODO: Properly handle refresh token (currently the application fails if the access token expires)
 
+
 @app.route("/auth")
 def handle_oauth():
     """
@@ -81,14 +82,17 @@ def callback():
 
 
 def get_fantasy_stats():
+    """
+    Call YahooAPI class to get fantasy season stats.
+    """
     try:
-        if 'access_token' not in session:
+        if "access_token" not in session:
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
-        
-        yahoo = YahooAPI(session['access_token'])
+
+        yahoo = YahooAPI(session["access_token"])
         results = yahoo.get_league_data()
         return {"success": True, "data": results}
-        
+
     except Exception as e:
         logger.error(f"Error in get_fantasy_stats: {e}")
         return {"success": False, "error": str(e)}
