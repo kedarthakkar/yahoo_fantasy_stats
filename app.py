@@ -149,9 +149,9 @@ def get_fantasy_stats():
     #         }
         
     #     return {"success": True, "data": results}
-    # except Exception as e:
-    #     logger.error(f"Error in get_fantasy_stats: {e}")
-    #     return {"success": False, "error": str(e)}
+    except Exception as e:
+        logger.error(f"Error in get_fantasy_stats: {e}")
+        return {"success": False, "error": str(e)}
 
 @app.route('/')
 def home():
