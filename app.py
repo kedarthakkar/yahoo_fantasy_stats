@@ -35,6 +35,37 @@ def handle_oauth():
     auth_url = f"{YAHOO_AUTH_URL}?" + "&".join(f"{k}={v}" for k, v in auth_params.items())
     return redirect(auth_url)
 
+@app.route('/callback')
+def callback():
+    """Handle OAuth callback"""
+    try:
+        code = request.args.get('code')
+        if not code:
+            return "No code provided", 400
+
+        # Exchange code for token
+        token_data = {
+            'grant_type': 'authorization_code',
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'redirect_uri': REDIRECT_URI,
+            'code': code
+        }
+        
+        response = requests.post(YAHOO_TOKEN_URL, data=token_data)
+        if response.status_code != 200:
+            logger.error(f"Token exchange failed: {response.text}")
+            return "Authentication failed", 500
+            
+        token_info = response.json()
+        session['access_token'] = token_info['access_token']
+        session['refresh_token'] = token_info.get('refresh_token')
+        
+        return redirect(url_for('home'))
+        
+    except Exception as e:
+        logger.error(f"Callback error: {e}")
+        return str(e), 500
 
 # def get_oauth_session():
 #     """Get or create OAuth session"""
@@ -49,27 +80,6 @@ def handle_oauth():
 #     except Exception as e:
 #         logger.error(f"Error creating OAuth session: {e}")
 #         return None
-
-@app.route('/callback')
-def callback():
-    """Handle OAuth callback"""
-    try:
-        code = request.args.get('code')
-        if not code:
-            return "No code provided", 400
-
-        sc = OAuth2(os.getenv('CONSUMER_KEY'), 
-                   os.getenv('CONSUMER_SECRET'),
-                   browser_callback=True)
-        
-        # Get token using the authorization code
-        token = sc.get_token(code)
-        session['oauth_token'] = token
-        
-        return redirect('/')
-    except Exception as e:
-        logger.error(f"Callback error: {e}")
-        return str(e), 500
 
 def get_fantasy_stats():
     try:
