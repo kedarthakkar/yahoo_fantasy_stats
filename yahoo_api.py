@@ -68,8 +68,7 @@ class YahooAPI:
             for i in range(int(matchups['count'])):
                 matchup = matchups[str(i)]['matchup']
                 logger.info(matchup['0']['teams'])
-                for k, v in matchup['0']['teams'].items():
-                    logger.info('k: ' + str(k))
+                for v in matchup['0']['teams'].values():
                     logger.info('v: ' + str(v))
                     # logger.info('team: ' + str(team))
                     # logger.info('team type: ' + str(type(team)))
