@@ -58,7 +58,8 @@ def callback():
             return "Authentication failed", 500
             
         token_info = response.json()
-        session['token_info'] = token_info
+        session['access_token'] = token_info['access_token']
+        session['refresh_token'] = token_info.get('refresh_token')
         
         return redirect(url_for('home'))
         
@@ -68,14 +69,14 @@ def callback():
 
 def get_oauth_session():
     """Get or create OAuth session"""
-    if 'token_info' not in session:
+    if 'access_token' not in session:
         return None
     
     try:
         sc = OAuth2(
             CLIENT_ID, 
             CLIENT_SECRET,
-            token_dict=session['token_info']
+            token_dict=session['access_token']
         )
         return sc
     except Exception as e:
@@ -84,12 +85,8 @@ def get_oauth_session():
 
 def get_fantasy_stats():
     try:
-        sc = get_oauth_session()
-        if not sc:
-            return {"success": False, "error": "Not authenticated", "needs_auth": True}
-
         # Create a Game object for NFL
-        game = yfa.Game(sc, "nfl")
+        game = yfa.Game(session['access_token'], "nfl")
 
         logger.info("MADE IT HERE")
         
@@ -140,7 +137,7 @@ def get_fantasy_stats():
 
 @app.route('/')
 def home():
-    if 'token_info' not in session:
+    if 'access_token' not in session:
         return render_template('index.html', needs_auth=True)
     return render_template('index.html')
 
