@@ -94,7 +94,7 @@ def get_fantasy_stats():
         }
         leagues_data = requests.get("https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nfl/leagues?format=json", headers=headers)
         logger.info(leagues_data.json())
-        league_key = leagues_data['fantasy_content']['users']['0']['user'][1]['games']['0']['game'][1]['leagues']['0']['league'][0]['league_key']
+        league_key = leagues_data.json()['fantasy_content']['users']['0']['user'][1]['games']['0']['game'][1]['leagues']['0']['league'][0]['league_key']
         logger.info(league_key)
     # try:
     #     if 'access_token' not in session:
