@@ -9,6 +9,7 @@ import logging
 import requests
 import sys
 import time
+from yahoo_api import YahooAPI
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev")  # Add a secret key for sessions
