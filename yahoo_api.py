@@ -74,6 +74,8 @@ class YahooAPI:
                 logger.info('matchup: ' + str(matchup))
                 logger.info('matchup type: ' + str(type(matchup)))
                 for team in matchup['0']['teams'].values():
+                    logger.info('team: ' + str(team))
+                    logger.info('team type: ' + str(type(team)))
                     team_name = team['team'][0][2]['name']
                     team_score = float(team['team'][1]['team_points']['total'])
                     teams[team_name].append(team_score)
