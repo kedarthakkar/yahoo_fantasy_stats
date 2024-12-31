@@ -18,9 +18,9 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 # OAuth configuration
 YAHOO_AUTH_URL = "https://api.login.yahoo.com/oauth2/request_auth"
 YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
+REDIRECT_URI = "https://fantasy-wrapped-e5f08855da35.herokuapp.com/callback"
 CLIENT_ID = os.getenv('CONSUMER_KEY')
 CLIENT_SECRET = os.getenv('CONSUMER_SECRET')
-REDIRECT_URI = os.getenv('REDIRECT_URI', 'https://yahoo-fantasy-stats-c60d246bfdb0.herokuapp.com/callback')
 
 @app.route('/auth')
 def handle_oauth():
@@ -34,21 +34,7 @@ def handle_oauth():
     
     auth_url = f"{YAHOO_AUTH_URL}?" + "&".join(f"{k}={v}" for k, v in auth_params.items())
     return redirect(auth_url)
-    # try:
-    #     # Create new OAuth session
-    #     oauth = OAuth2(
-    #         CLIENT_ID, 
-    #         CLIENT_SECRET
-    #     )
-        
-    #     if not oauth.token_is_valid():
-    #         oauth.refresh_access_token()
-            
-    #     return oauth
 
-    # except Exception as e:
-    #     logger.error(f"OAuth handling error: {e}")
-    #     return None
 
 # def get_oauth_session():
 #     """Get or create OAuth session"""
@@ -63,13 +49,6 @@ def handle_oauth():
 #     except Exception as e:
 #         logger.error(f"Error creating OAuth session: {e}")
 #         return None
-
-# def auth():
-#     """Start OAuth flow"""
-#     sc = OAuth2(os.getenv('CONSUMER_KEY'), 
-#                 os.getenv('CONSUMER_SECRET'),
-#                 browser_callback=True)
-#     return redirect(sc.get_authorization_url())
 
 @app.route('/callback')
 def callback():
