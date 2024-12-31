@@ -64,18 +64,13 @@ class YahooAPI:
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
             scores_data = scores_response.json()
-            logger.info('scores_data: ' + str(scores_data))
-            logger.info('scores_data type: ' + str(type(scores_data)))
-            matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups']
-            logger.info('matchups: ' + str(matchups))
-            logger.info('matchups type: ' + str(type(matchups)))    
+            matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups'] 
             for i in range(int(matchups['count'])):
                 matchup = matchups[str(i)]['matchup']
-                logger.info('matchup: ' + str(matchup))
-                logger.info('matchup type: ' + str(type(matchup)))
+                logger.info(matchup['0']['teams'])
                 for team in matchup['0']['teams'].values():
-                    logger.info('team: ' + str(team))
-                    logger.info('team type: ' + str(type(team)))
+                    # logger.info('team: ' + str(team))
+                    # logger.info('team type: ' + str(type(team)))
                     team_name = team['team'][0][2]['name']
                     team_score = float(team['team'][1]['team_points']['total'])
                     teams[team_name].append(team_score)
