@@ -86,6 +86,18 @@
 <body>
     <div class="container">
         <h1>Select Your Fantasy Team</h1>
+
+        {% if needs_auth %}
+        <div id="auth-required" class="hidden text-center py-8">
+            <p class="text-lg mb-4">Please authenticate with Yahoo to view your stats</p>
+            <a href="/auth" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Login with Yahoo
+            </a>
+        </div>
+        <div id="loading" class="text-center py-8">
+            Loading league info...
+        </div>
+        {% else %}
         <div class="team-list" id="teamList">
             {% for name, logo in team_info %}
             <div class="team-item" onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
@@ -94,6 +106,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 </body>
 </html>
