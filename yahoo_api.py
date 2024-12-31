@@ -24,8 +24,9 @@ class YahooAPI:
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
         }
+        self.league_key = self.get_league_key()
 
-    def get_league_data(self):
+    def get_league_key(self):
         # Get all leagues for current year
         current_year = datetime.now().year
         url = (
@@ -40,17 +41,17 @@ class YahooAPI:
             "0"
         ]["game"][1]["leagues"]["0"]["league"][0]["league_key"]
 
-        return self.get_league_stats(league_key)
+        return league_key
 
-    def get_league_stats(self, league_key):
+    def get_league_stats(self):
         # Get teams in league
-        teams_url = f"{self.base_url}/league/{league_key}/teams?format=json"
+        teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
         teams_data = teams_response.json()
 
         # Get current week
-        standings_url = f"{self.base_url}/league/{league_key}/standings?format=json"
+        standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
@@ -65,7 +66,7 @@ class YahooAPI:
 
         # Get scores for each week
         for week in range(1, int(current_week)):
-            scoreboard_url = f"{self.base_url}/league/{league_key}/scoreboard;week={week}?format=json"
+            scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
             scores_data = scores_response.json()
@@ -95,3 +96,12 @@ class YahooAPI:
                 }
 
         return results
+
+    def get_team_list(self):
+        # Get teams in league
+        teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
+        teams_response = requests.get(teams_url, headers=self.headers)
+        teams_response.raise_for_status()
+        teams_data = teams_response.json()
+        logger.info(teams_data)
+        return teams_data

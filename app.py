@@ -90,11 +90,26 @@ def get_fantasy_stats():
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
 
         yahoo = YahooAPI(session["access_token"])
-        results = yahoo.get_league_data()
+        results = yahoo.get_league_stats()
         return {"success": True, "data": results}
 
     except Exception as e:
         logger.error(f"Error in get_fantasy_stats: {e}")
+        return {"success": False, "error": str(e)}
+
+def get_team_list():
+    """
+    Call YahooAPI class to get team list.
+    """
+    try:
+        if "access_token" not in session:
+            return {"success": False, "error": "Not authenticated", "needs_auth": True}
+
+        yahoo = YahooAPI(session["access_token"])
+        results = yahoo.get_team_list()
+        return {"success": True, "data": results}
+    except Exception as e:
+        logger.error(f"Error in get_team_list: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -112,6 +127,12 @@ def home():
 def get_stats():
     stats = get_fantasy_stats()
     return jsonify(stats)
+
+
+@app.route("/team_list")
+def get_team_list():
+    team_list = get_team_list()
+    return jsonify(team_list)
 
 
 if __name__ == "__main__":
