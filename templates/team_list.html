@@ -22,12 +22,15 @@
         </div>
         {% else %}
         <div class="team-list" id="teamList">
-            {% for name, logo in team_info %}
-            <div class="team-item" onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
-                <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo">
-                <div class="team-name">{{ name }}</div>
+            <div class="grid grid-cols-1 gap-4">
+                {% for name, logo in team_info %}
+                <div class="team-item flex items-center p-4 bg-white shadow rounded hover:bg-gray-100 cursor-pointer" 
+                     onclick="window.location.href='/team/{{ name|lower|replace(' ', '-') }}'">
+                    <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo w-16 h-16 rounded-full mr-4">
+                    <div class="team-name text-lg font-medium">{{ name }}</div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
         {% endif %}
     </div>
