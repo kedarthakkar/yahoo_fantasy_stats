@@ -43,14 +43,16 @@ class YahooAPI:
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
         teams_data = teams_response.json()
-        logger.info(teams_data)
+        logger.info('teams_data: ' + str(teams_data))
+
         # Get current week
         standings_url = f"{self.base_url}/league/{league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
+        logger.info('standings_data: ' + str(standings_data))
         current_week = standings_data['fantasy_content']['league'][0]['current_week']
-        logger.info(current_week)
+        logger.info('current_week: ' + str(current_week))
 
         # Initialize team scores
         teams = {}
@@ -59,7 +61,7 @@ class YahooAPI:
                 team_name = team['team'][0][2]['name']
                 teams[team_name] = []
         
-        logger.info(teams)
+        logger.info('teams 1: ' + str(teams))
 
         # Get scores for each week
         for week in range(1, int(current_week)):
@@ -76,7 +78,7 @@ class YahooAPI:
                     team_score = float(team['team'][1]['team_points']['total'])
                     teams[team_name].append(team_score)
 
-        logger.info(teams)
+        logger.info('teams 2: ' + str(teams))
         
         # Calculate statistics
         results = {}
@@ -91,6 +93,6 @@ class YahooAPI:
                     "min": min(scores)
                 }
 
-        logger.info(results)
+        logger.info('results: ' + str(results))
         
         return results
