@@ -83,9 +83,9 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Select Your Fantasy Team</h1>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Select Your Fantasy Team</h1>
 
         {% if needs_auth %}
         <div id="auth-required" class="hidden text-center py-8">
@@ -96,6 +96,8 @@
         </div>
         <div id="loading" class="text-center py-8">
             Loading league info...
+        </div>
+        <div id="error" class="hidden text-red-600 text-center py-8">
         </div>
         {% else %}
         <div class="team-list" id="teamList">
