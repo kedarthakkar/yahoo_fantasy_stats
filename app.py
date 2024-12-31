@@ -27,9 +27,9 @@ def handle_oauth():
     """Initialize and handle OAuth2 authentication with Yahoo"""
     auth_params = {
         'client_id': CLIENT_ID,
-        'redirect_uri': REDIRECT_URI,
+        'redirect_uri': 'oob',
         'response_type': 'code',
-        'scope': 'fspt-w'
+        # 'scope': 'fspt-w'
     }
     
     auth_url = f"{YAHOO_AUTH_URL}?" + "&".join(f"{k}={v}" for k, v in auth_params.items())
