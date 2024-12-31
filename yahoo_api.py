@@ -56,9 +56,7 @@ class YahooAPI:
 
         # Initialize team scores
         teams = {}
-        logger.info(teams_data['fantasy_content']['league'][1]['teams'])
-        logger.info(type(teams_data['fantasy_content']['league'][1]['teams']))
-        for team in teams_data['fantasy_content']['league'][1]['teams']:
+        for team in teams_data['fantasy_content']['league'][1]['teams'].values():
             logger.info('team: ' + str(team))
             logger.info('team type: ' + str(type(team)))
             if isinstance(team, dict):
