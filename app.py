@@ -20,7 +20,7 @@ YAHOO_AUTH_URL = "https://api.login.yahoo.com/oauth2/request_auth"
 YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
 CLIENT_ID = os.getenv('CONSUMER_KEY')
 CLIENT_SECRET = os.getenv('CONSUMER_SECRET')
-REDIRECT_URI = os.getenv('REDIRECT_URI', 'https://your-heroku-app.herokuapp.com/callback')
+REDIRECT_URI = os.getenv('REDIRECT_URI', 'https://yahoo-fantasy-stats-c60d246bfdb0.herokuapp.com/callback')
 
 @app.route('/auth')
 def handle_oauth():
