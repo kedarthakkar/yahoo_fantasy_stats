@@ -131,10 +131,14 @@ def get_stats():
 
 @app.route("/team_list")
 def get_team_list():
+    if "access_token" not in session:
+        return render_template("team_list.html", needs_auth=True)
+    
     team_list = get_fantasy_team_list()
     return render_template(
         "team_list.html",
         team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
+        needs_auth=False,
     )
 
 
