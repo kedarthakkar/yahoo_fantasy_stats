@@ -87,20 +87,6 @@ def get_fantasy_stats():
     try:
         if 'access_token' not in session:
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
-            
-        # Create OAuth2 object with credentials and token info
-        sc = OAuth2(
-            CLIENT_ID,
-            CLIENT_SECRET,
-            from_file=None,  # Prevent file reading
-            token_time=time.time(),  # Current time
-            token={
-                'access_token': session['access_token'],
-                'refresh_token': session.get('refresh_token'),
-                'token_type': 'bearer',
-                'token_time': time.time()
-            }
-        )
         
         # Create game object with the OAuth instance
         headers = {
