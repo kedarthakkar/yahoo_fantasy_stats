@@ -43,39 +43,36 @@ class YahooAPI:
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
         teams_data = teams_response.json()
-        logger.info('teams_data: ' + str(teams_data))
 
         # Get current week
         standings_url = f"{self.base_url}/league/{league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
-        logger.info('standings_data: ' + str(standings_data))
         current_week = standings_data['fantasy_content']['league'][0]['current_week']
-        logger.info('current_week: ' + str(current_week))
 
         # Initialize team scores
         teams = {}
         for team in teams_data['fantasy_content']['league'][1]['teams'].values():
-            logger.info('team: ' + str(team))
-            logger.info('team type: ' + str(type(team)))
             if isinstance(team, dict):
                 team_name = team['team'][0][2]['name']
-                logger.info('team_name: ' + str(team_name))
                 teams[team_name] = []
         
-        logger.info('teams 1: ' + str(teams))
-
         # Get scores for each week
         for week in range(1, int(current_week)):
             scoreboard_url = f"{self.base_url}/league/{league_key}/scoreboard;week={week}?format=json"
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
             scores_data = scores_response.json()
-            
+            logger.info('scores_data: ' + str(scores_data))
+            logger.info('scores_data type: ' + str(type(scores_data)))
             matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups']
+            logger.info('matchups: ' + str(matchups))
+            logger.info('matchups type: ' + str(type(matchups)))    
             for i in range(int(matchups['count'])):
                 matchup = matchups[str(i)]['matchup']
+                logger.info('matchup: ' + str(matchup))
+                logger.info('matchup type: ' + str(type(matchup)))
                 for team in matchup['0']['teams']:
                     team_name = team['team'][0][2]['name']
                     team_score = float(team['team'][1]['team_points']['total'])
