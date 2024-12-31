@@ -64,7 +64,8 @@ class YahooAPI:
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
             scores_data = scores_response.json()
-            matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups'] 
+            matchups = scores_data['fantasy_content']['league'][1]['scoreboard']['0']['matchups']
+            logger.info(matchups)
             for i in range(int(matchups['count'])):
                 matchup = matchups[str(i)]['matchup']
                 logger.info(matchup)
