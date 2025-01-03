@@ -113,7 +113,7 @@ def get_fantasy_team_list():
         return {"success": False, "error": str(e)}
 
 
-def get_team_wrapped(team_name):
+def get_fantasy_team_wrapped(team_name):
     """
     Call YahooAPI class to get the necessary information for the wrapped summary.
     """
@@ -160,7 +160,7 @@ def get_team_list():
 
 @app.route("/team_wrapped/<team_name>")
 def get_team_wrapped(team_name):
-    wrapped = get_team_wrapped(team_name)
+    wrapped = get_fantasy_team_wrapped(team_name)
     return render_template(
         "wrapped.html",
         team_name=team_name,
