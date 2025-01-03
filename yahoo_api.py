@@ -137,18 +137,34 @@ class YahooAPI:
         teams_response.raise_for_status()
         teams_data = teams_response.json()
 
-        names_to_logos = {}
+        names_to_info = {}
         for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
             if isinstance(team, dict):
-                names_to_logos[team["team"][0][2]["name"]] = team["team"][0][5]["team_logos"][0][
-                    "team_logo"
-                ]["url"]
+                names_to_info[team["team"][0][2]["name"]] = {
+                    "logo_url": team["team"][0][5]["team_logos"][0][
+                        "team_logo"
+                    ]["url"]
+                }
 
         standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
-        current_week = standings_data["fantasy_content"]["league"][0]["current_week"]
-        logger.info(standings_data)
+        standings_data = standings_data["fantasy_content"]["league"][1]["standings"][0]["teams"]
 
-        return names_to_logos[team_name]
+        for i in range(standings_data["count"]):
+            team_name = standings_data[str(i)]["team"][0][2]["name"]
+            rank = standings_data[str(i)]["team"][2]["team_standings"]["rank"]
+            wins = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["wins"])
+            losses = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["losses"])
+            ties = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["ties"])
+
+            record_str = f"{wins}-{losses}-{ties}"
+            avg_points = standings_data[str(i)]["team"][2]["team_standings"]["points_for"] / (wins + losses + ties)
+            names_to_info[team_name].update({
+                "rank": rank,
+                "record": record_str,
+                "avg_points": avg_points
+            })
+
+        return names_to_info[team_name]

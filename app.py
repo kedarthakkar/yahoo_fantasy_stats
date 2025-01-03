@@ -122,8 +122,16 @@ def get_fantasy_team_wrapped(team_name):
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
 
         yahoo = YahooAPI(session["access_token"])
-        team_logo = yahoo.get_team_wrapped(team_name)
-        return {"success": True, "data": {"team_logo": team_logo}}
+        team_info = yahoo.get_team_wrapped(team_name)
+        return {
+            "success": True, 
+            "data": {
+                "team_logo": team_info["logo_url"],
+                "team_rank": team_info["rank"],
+                "team_record": team_info["record"],
+                "team_avg_points": team_info["avg_points"]
+            }
+        }
     except Exception as e:
         logger.error(f"Error in get_team_wrapped: {e}")
         return {"success": False, "error": str(e)}
@@ -166,6 +174,9 @@ def get_team_wrapped(team_name):
         "wrapped.html",
         team_name=team_name,
         team_logo=wrapped["data"]["team_logo"],
+        team_rank=wrapped["data"]["team_rank"],
+        team_record=wrapped["data"]["team_record"],
+        team_avg_points=wrapped["data"]["team_avg_points"]
     )
 
 
