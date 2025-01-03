@@ -171,7 +171,7 @@ class YahooAPI:
         # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
         # Set up a dictionary of team name --> team name --> list of points scored and points allowed
 
-        for week in range(1, int(current_week)):
+        for week in range(1, (wins + losses + ties)):
             scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
