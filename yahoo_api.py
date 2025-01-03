@@ -162,6 +162,7 @@ class YahooAPI:
         # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
         # Set up a dictionary of team name --> team name --> list of points scored and points allowed
         projected_points = {}
+        adversaries = {}
 
         for week in range(1, (wins + losses + ties)):
             scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
@@ -173,12 +174,24 @@ class YahooAPI:
             ]
             for i in range(int(matchups["count"])):
                 matchup = matchups[str(i)]["matchup"]
+                team_names = []
+                team_points = []
 
                 for i in range(matchup["0"]["teams"]["count"]):
                     curr_team = matchup["0"]["teams"][str(i)]["team"]
                     curr_team_name = curr_team[0][2]["name"]
                     projected_points[curr_team_name] = projected_points.get(curr_team_name, 0) + float(curr_team[1]["team_projected_points"]["total"])
+                    team_names.append(curr_team_name)
+                    team_points.append(float(curr_team[1]["team_points"]["total"]))
 
-        logger.info(total_points)
-        logger.info(projected_points)
+                if team_names[0] not in adversaries:
+                    adversaries[team_names[0]] = {}
+
+                if team_names[1] not in adversaries[team_names[0]]:
+                    adversaries[team_names[0]][team_names[1]] = {}
+                
+                adversaries[team_names[0]][team_names[1]] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
+                adversaries[team_names[0]][team_names[1]] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
+
+        logger.info(adversaries)
         return names_to_info[team_name]
