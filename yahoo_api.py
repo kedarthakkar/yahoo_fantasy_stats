@@ -160,7 +160,7 @@ class YahooAPI:
             ties = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["ties"])
 
             record_str = f"{wins}-{losses}-{ties}"
-            avg_points = standings_data[str(i)]["team"][2]["team_standings"]["points_for"] / (wins + losses + ties)
+            avg_points = float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties)
             names_to_info[team_name].update({
                 "rank": rank,
                 "record": record_str,
