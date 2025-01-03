@@ -186,13 +186,24 @@ class YahooAPI:
                 if team_names[0] not in adversaries:
                     adversaries[team_names[0]] = {}
 
+                if team_names[1] not in adversaries:
+                    adversaries[team_names[1]] = {}
+
                 if team_names[1] not in adversaries[team_names[0]]:
                     adversaries[team_names[0]][team_names[1]] = {}
-                
+
+                if team_names[0] not in adversaries[team_names[1]]:
+                    adversaries[team_names[1]][team_names[0]] = {}
+
                 adversaries[team_names[0]][team_names[1]]["points_for"] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
                 adversaries[team_names[0]][team_names[1]]["points_against"] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
+                adversaries[team_names[1]][team_names[0]]["points_for"] = adversaries[team_names[1]][team_names[0]].get("points_for", []) + [team_points[1]]
+                adversaries[team_names[1]][team_names[0]]["points_against"] = adversaries[team_names[1]][team_names[0]].get("points_against", []) + [team_points[0]]
 
         logger.info(adversaries)
+        logger.info(total_points)
+        logger.info(projected_points)
+
         for team in adversaries:
             # Calculate BBQ Chicken
             bbq_chicken = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_for"]))
