@@ -5,3 +5,4 @@ flask
 black
 requests
 inflect
+numpy
