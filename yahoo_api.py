@@ -163,7 +163,7 @@ class YahooAPI:
         projected_points = {}
         adversaries = {}
 
-        for week in range(1, (wins + losses + ties)):
+        for week in range(1, (wins + losses + ties + 1)):
             scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
@@ -207,12 +207,12 @@ class YahooAPI:
         for team in adversaries:
             # Calculate BBQ Chicken
             bbq_chicken = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_for"]))
-            names_to_info[team]["bbq_chicken_avg_points"] = np.mean(adversaries[team][bbq_chicken]["points_for"])
+            names_to_info[team]["bbq_chicken_avg_points"] = round(np.mean(adversaries[team][bbq_chicken]["points_for"]), 2)
             names_to_info[team]["bbq_chicken"] = bbq_chicken
 
             # Calculate Nemesis
             nemesis = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_against"]))
-            names_to_info[team]["nemesis_avg_points"] = np.mean(adversaries[team][nemesis]["points_against"])
+            names_to_info[team]["nemesis_avg_points"] = round(np.mean(adversaries[team][nemesis]["points_against"]), 2)
             names_to_info[team]["nemesis"] = nemesis
 
             # Calculate Over/Under-Performer
