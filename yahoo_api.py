@@ -118,3 +118,18 @@ class YahooAPI:
                 )
 
         return team_names, team_logos
+
+    def get_team_wrapped(self, team_name):
+        """
+        Returns relevant team information for the given team's wrapped summary.
+        - Team name and logo 
+
+        - Final standing 
+        - Final record
+        - Average fantasy points per week and rank of that average
+        
+        - BBQ Chicken: Team which this team averaged the most points against on the season
+        - Nemesis: Team with the highest average fantasy points against this team on the season 
+        - Over/Under-Performer: Percentage points scored by this team over/under their projected points for the season
+        """
+        pass

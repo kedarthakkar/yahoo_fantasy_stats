@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Summary</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 24px;
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .team-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        .team-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .badge-row:last-child {
+            border-bottom: none;
+        }
+
+        .badge-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #eee;
+            flex-shrink: 0;
+        }
+
+        .badge-content h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .badge-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="team-header">
+            <img src="/api/placeholder/64/64" alt="Team Logo" class="team-logo">
+            <h1 class="team-name">Thunder Dragons</h1>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <span class="stat-value">2nd</span>
+                <span class="stat-label">Final Standing</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">10-4</span>
+                <span class="stat-label">Record</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">142.6</span>
+                <span class="stat-label">Pts/Week</span>
+            </div>
+        </div>
+
+        <div class="badge-row">
+            <img src="/api/placeholder/48/48" alt="Nemesis Badge" class="badge-icon">
+            <div class="badge-content">
+                <h3>Nemesis</h3>
+                <p>Defeated the same opponent three times during the season</p>
+            </div>
+        </div>
+
+        <div class="badge-row">
+            <img src="/api/placeholder/48/48" alt="High Scorer Badge" class="badge-icon">
+            <div class="badge-content">
+                <h3>High Scorer</h3>
+                <p>Led the league in scoring for 4 weeks</p>
+            </div>
+        </div>
+
+        <div class="badge-row">
+            <img src="/api/placeholder/48/48" alt="Comeback Kid Badge" class="badge-icon">
+            <div class="badge-content">
+                <h3>Comeback Kid</h3>
+                <p>Won 3 matches after trailing by 20+ points</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
