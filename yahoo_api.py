@@ -168,4 +168,26 @@ class YahooAPI:
                 "avg_points": avg_points
             })
 
+        # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
+        # Set up a dictionary of team name --> team name --> list of points scored and points allowed
+
+        for week in range(1, int(current_week)):
+            scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
+            scores_response = requests.get(scoreboard_url, headers=self.headers)
+            scores_response.raise_for_status()
+            scores_data = scores_response.json()
+            matchups = scores_data["fantasy_content"]["league"][1]["scoreboard"]["0"][
+                "matchups"
+            ]
+            for i in range(int(matchups["count"])):
+                matchup = matchups[str(i)]["matchup"]
+                logger.info(matchup)
+                break
+
+                for team in matchup["0"]["teams"].values():
+                    if isinstance(team, dict):
+                        team_name = team["team"][0][2]["name"]
+                        team_score = float(team["team"][1]["team_points"]["total"])
+                        teams[team_name].append(team_score)
+
         return names_to_info[team_name]
