@@ -163,12 +163,12 @@ class YahooAPI:
 
             record_str = f"{wins}-{losses}-{ties}"
             avg_points = round(float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties), 2)
-            names_to_info[standings_data[str(i)]["team"][0][2]["name"]].update({
+            names_to_info[standings_data[str(i)]["team"][0][2]["name"]] = {
                 "logo_url": logo_url,
                 "rank": p.ordinal(rank),
                 "record": record_str,
                 "avg_points": avg_points
-            })
+            }
 
         # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
         # Set up a dictionary of team name --> team name --> list of points scored and points allowed
