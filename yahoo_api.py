@@ -190,8 +190,8 @@ class YahooAPI:
                 if team_names[1] not in adversaries[team_names[0]]:
                     adversaries[team_names[0]][team_names[1]] = {}
                 
-                adversaries[team_names[0]][team_names[1]] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
-                adversaries[team_names[0]][team_names[1]] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
+                adversaries[team_names[0]][team_names[1]]["points_for"] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
+                adversaries[team_names[0]][team_names[1]]["points_against"] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
 
         logger.info(adversaries)
         return names_to_info[team_name]
