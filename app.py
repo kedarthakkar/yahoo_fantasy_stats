@@ -176,6 +176,11 @@ def get_team_list():
 def get_team_wrapped(team_name):
     team_name = team_name.replace("-", " ")
     wrapped = get_fantasy_team_wrapped(team_name)
+    if wrapped["data"]["over_under_performer"] == "Over":
+        badge_image = "images/overperformer.jpg"
+    else:
+        badge_image = "images/underperformer.jpg"
+    
     return render_template(
         "wrapped.html",
         team_name=team_name,
@@ -189,6 +194,7 @@ def get_team_wrapped(team_name):
         nemesis_avg_points=wrapped["data"]["nemesis_avg_points"],
         percentage_improvement=wrapped["data"]["percentage_improvement"],
         over_under_performer=wrapped["data"]["over_under_performer"],
+        badge_image=badge_image,
     )
 
 
