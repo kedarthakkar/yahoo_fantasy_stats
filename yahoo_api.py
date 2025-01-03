@@ -8,6 +8,7 @@ import json
 import logging
 import sys
 import requests
+import numpy as np
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev")
@@ -159,8 +160,6 @@ class YahooAPI:
                 "avg_points": avg_points
             }
 
-        # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
-        # Set up a dictionary of team name --> team name --> list of points scored and points allowed
         projected_points = {}
         adversaries = {}
 
@@ -193,5 +192,19 @@ class YahooAPI:
                 adversaries[team_names[0]][team_names[1]]["points_for"] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
                 adversaries[team_names[0]][team_names[1]]["points_against"] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
 
-        logger.info(adversaries)
+        for team in adversaries:
+            # Calculate BBQ Chicken
+            bbq_chicken = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_for"]))
+            names_to_info[team]["bbq_chicken"] = bbq_chicken
+
+            # Calculate Nemesis
+            nemesis = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_against"]))
+            names_to_info[team]["nemesis"] = nemesis
+
+            # Calculate Over/Under-Performer
+            percentage_improvement = round((total_points[team] / projected_points[team]) * 100, 2)
+            names_to_info[team]["percentage_improvement"] = percentage_improvement
+            names_to_info[team]["over_under_performer"] = "Over" if percentage_improvement > 0 else "Under"
+
+        logger.info(names_to_info[team_name])
         return names_to_info[team_name]
