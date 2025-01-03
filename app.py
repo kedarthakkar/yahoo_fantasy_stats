@@ -143,8 +143,8 @@ def get_fantasy_team_wrapped(team_name):
         return {"success": False, "error": str(e)}
 
 
-@app.route("/")
-def home():
+@app.route("/stats")
+def stats():
     """
     Renders the home page, with authentication flow if the user is not authenticated.
     """
@@ -159,7 +159,7 @@ def get_stats():
     return jsonify(stats)
 
 
-@app.route("/team_list")
+@app.route("/")
 def get_team_list():
     if "access_token" not in session:
         return render_template("team_list.html", needs_auth=True)

@@ -200,10 +200,6 @@ class YahooAPI:
                 adversaries[team_names[1]][team_names[0]]["points_for"] = adversaries[team_names[1]][team_names[0]].get("points_for", []) + [team_points[1]]
                 adversaries[team_names[1]][team_names[0]]["points_against"] = adversaries[team_names[1]][team_names[0]].get("points_against", []) + [team_points[0]]
 
-        logger.info(adversaries)
-        logger.info(total_points)
-        logger.info(projected_points)
-
         for team in adversaries:
             # Calculate BBQ Chicken
             bbq_chicken = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_for"]))
@@ -217,7 +213,7 @@ class YahooAPI:
 
             # Calculate Over/Under-Performer
             percentage_improvement = round((total_points[team] / projected_points[team] - 1) * 100, 2)
-            names_to_info[team]["percentage_improvement"] = percentage_improvement
+            names_to_info[team]["percentage_improvement"] = abs(percentage_improvement)
             names_to_info[team]["over_under_performer"] = "Over" if percentage_improvement > 0 else "Under"
 
         return names_to_info[team_name]
