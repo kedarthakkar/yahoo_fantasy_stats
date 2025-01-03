@@ -129,7 +129,13 @@ def get_fantasy_team_wrapped(team_name):
                 "team_logo": team_info["logo_url"],
                 "team_rank": team_info["rank"],
                 "team_record": team_info["record"],
-                "team_avg_points": team_info["avg_points"]
+                "team_avg_points": team_info["avg_points"],
+                "bbq_chicken": team_info["bbq_chicken"],
+                "bbq_chicken_avg_points": team_info["bbq_chicken_avg_points"],
+                "nemesis": team_info["nemesis"],
+                "nemesis_avg_points": team_info["nemesis_avg_points"],
+                "percentage_improvement": team_info["percentage_improvement"],
+                "over_under_performer": team_info["over_under_performer"],
             }
         }
     except Exception as e:
