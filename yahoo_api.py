@@ -133,19 +133,19 @@ class YahooAPI:
         - Nemesis: Team with the highest average fantasy points against this team on the season 
         - Over/Under-Performer: Percentage points scored by this team over/under their projected points for the season
         """
-        teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
-        teams_response = requests.get(teams_url, headers=self.headers)
-        teams_response.raise_for_status()
-        teams_data = teams_response.json()
+        # teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
+        # teams_response = requests.get(teams_url, headers=self.headers)
+        # teams_response.raise_for_status()
+        # teams_data = teams_response.json()
 
         names_to_info = {}
-        for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
-            if isinstance(team, dict):
-                names_to_info[team["team"][0][2]["name"]] = {
-                    "logo_url": team["team"][0][5]["team_logos"][0][
-                        "team_logo"
-                    ]["url"]
-                }
+        # for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
+        #     if isinstance(team, dict):
+        #         names_to_info[team["team"][0][2]["name"]] = {
+        #             "logo_url": team["team"][0][5]["team_logos"][0][
+        #                 "team_logo"
+        #             ]["url"]
+        #         }
 
         standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
@@ -155,6 +155,7 @@ class YahooAPI:
         p = inflect.engine()
 
         for i in range(standings_data["count"]):
+            logo_url = standings_data[str(i)]["team"][0][5]["team_logos"][0]["team_logo"]["url"]
             rank = int(standings_data[str(i)]["team"][2]["team_standings"]["rank"])
             wins = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["wins"])
             losses = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["losses"])
@@ -163,6 +164,7 @@ class YahooAPI:
             record_str = f"{wins}-{losses}-{ties}"
             avg_points = round(float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties), 2)
             names_to_info[standings_data[str(i)]["team"][0][2]["name"]].update({
+                "logo_url": logo_url,
                 "rank": p.ordinal(rank),
                 "record": record_str,
                 "avg_points": avg_points
