@@ -130,7 +130,7 @@
             <img src="/api/placeholder/48/48" alt="Nemesis Badge" class="badge-icon">
             <div class="badge-content">
                 <h3>BBQ Chicken</h3>
-                <p>Defeated the same opponent three times during the season</p>
+                <p>You dominated against {{ bbq_chicken }} this season, averaging {{ bbq_chicken_avg_points }} points against them.</p>
             </div>
         </div>
 
@@ -138,15 +138,15 @@
             <img src="/api/placeholder/48/48" alt="High Scorer Badge" class="badge-icon">
             <div class="badge-content">
                 <h3>Nemesis</h3>
-                <p>Defeated the same opponent three times during the season</p>
+                <p>Ouch! {{ nemesis }} had your number this season, averaging {{ nemesis_avg_points }} points against you.</p>
             </div>
         </div>
 
         <div class="badge-row">
             <img src="/api/placeholder/48/48" alt="Comeback Kid Badge" class="badge-icon">
             <div class="badge-content">
-                <h3>Comeback Kid</h3>
-                <p>Won 3 matches after trailing by 20+ points</p>
+                <h3>{{ over_under_performer }} Performer</h3>
+                <p>Your total points were {{ percentage_improvement }}% {{ over_under_performer }} your projected points for the season.</p>
             </div>
         </div>
     </div>

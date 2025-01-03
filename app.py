@@ -176,7 +176,13 @@ def get_team_wrapped(team_name):
         team_logo=wrapped["data"]["team_logo"],
         team_rank=wrapped["data"]["team_rank"],
         team_record=wrapped["data"]["team_record"],
-        team_avg_points=wrapped["data"]["team_avg_points"]
+        team_avg_points=wrapped["data"]["team_avg_points"],
+        bbq_chicken=wrapped["data"]["bbq_chicken"],
+        bbq_chicken_avg_points=wrapped["data"]["bbq_chicken_avg_points"],
+        nemesis=wrapped["data"]["nemesis"],
+        nemesis_avg_points=wrapped["data"]["nemesis_avg_points"],
+        percentage_improvement=wrapped["data"]["percentage_improvement"],
+        over_under_performer=wrapped["data"]["over_under_performer"],
     )
 
 
