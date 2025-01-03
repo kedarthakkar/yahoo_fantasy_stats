@@ -3,6 +3,7 @@ import yahoo_fantasy_api as yfa
 import statistics
 from datetime import datetime
 import os
+import inflect
 import json
 import logging
 import sys
@@ -151,18 +152,18 @@ class YahooAPI:
         standings_response.raise_for_status()
         standings_data = standings_response.json()
         standings_data = standings_data["fantasy_content"]["league"][1]["standings"][0]["teams"]
+        p = inflect.engine()
 
         for i in range(standings_data["count"]):
-            team_name = standings_data[str(i)]["team"][0][2]["name"]
-            rank = standings_data[str(i)]["team"][2]["team_standings"]["rank"]
+            rank = int(standings_data[str(i)]["team"][2]["team_standings"]["rank"])
             wins = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["wins"])
             losses = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["losses"])
             ties = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["ties"])
 
             record_str = f"{wins}-{losses}-{ties}"
-            avg_points = float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties)
-            names_to_info[team_name].update({
-                "rank": rank,
+            avg_points = round(float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties), 2)
+            names_to_info[standings_data[str(i)]["team"][0][2]["name"]].update({
+                "rank": p.ordinal(rank),
                 "record": record_str,
                 "avg_points": avg_points
             })
