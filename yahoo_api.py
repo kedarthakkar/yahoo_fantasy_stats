@@ -132,6 +132,7 @@ class YahooAPI:
         - Nemesis: Team with the highest average fantasy points against this team on the season 
         - Over/Under-Performer: Percentage points scored by this team over/under their projected points for the season
         """
+        team_name = team_name.replace("-", " ")
         teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
