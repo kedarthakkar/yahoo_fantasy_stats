@@ -133,20 +133,8 @@ class YahooAPI:
         - Nemesis: Team with the highest average fantasy points against this team on the season 
         - Over/Under-Performer: Percentage points scored by this team over/under their projected points for the season
         """
-        # teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
-        # teams_response = requests.get(teams_url, headers=self.headers)
-        # teams_response.raise_for_status()
-        # teams_data = teams_response.json()
-
         names_to_info = {}
-        # for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
-        #     if isinstance(team, dict):
-        #         names_to_info[team["team"][0][2]["name"]] = {
-        #             "logo_url": team["team"][0][5]["team_logos"][0][
-        #                 "team_logo"
-        #             ]["url"]
-        #         }
-
+        total_points = {}
         standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
@@ -163,6 +151,7 @@ class YahooAPI:
 
             record_str = f"{wins}-{losses}-{ties}"
             avg_points = round(float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties), 2)
+            total_points[standings_data[str(i)]["team"][0][2]["name"]] = total_points.get(standings_data[str(i)]["team"][0][2]["name"], 0) + float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"])
             names_to_info[standings_data[str(i)]["team"][0][2]["name"]] = {
                 "logo_url": logo_url,
                 "rank": p.ordinal(rank),
@@ -172,6 +161,7 @@ class YahooAPI:
 
         # TODO: Use scoreboard data to get BBQ Chicken and Nemesis and sum up projected points
         # Set up a dictionary of team name --> team name --> list of points scored and points allowed
+        projected_points = {}
 
         for week in range(1, (wins + losses + ties)):
             scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
@@ -183,13 +173,12 @@ class YahooAPI:
             ]
             for i in range(int(matchups["count"])):
                 matchup = matchups[str(i)]["matchup"]
-                logger.info(matchup)
-                break
 
-                for team in matchup["0"]["teams"].values():
-                    if isinstance(team, dict):
-                        team_name = team["team"][0][2]["name"]
-                        team_score = float(team["team"][1]["team_points"]["total"])
-                        teams[team_name].append(team_score)
+                for i in range(matchup["0"]["teams"]["count"]):
+                    curr_team = matchup["0"]["teams"][str(i)]["team"]
+                    curr_team_name = curr_team[0][2]["name"]
+                    projected_points[curr_team_name] = projected_points.get(curr_team_name, 0) + float(curr_team[1]["team_projected_points"]["total"])
 
+        logger.info(total_points)
+        logger.info(projected_points)
         return names_to_info[team_name]
