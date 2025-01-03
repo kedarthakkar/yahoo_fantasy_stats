@@ -113,6 +113,22 @@ def get_fantasy_team_list():
         return {"success": False, "error": str(e)}
 
 
+def get_team_wrapped(team_name):
+    """
+    Call YahooAPI class to get the necessary information for the wrapped summary.
+    """
+    try:
+        if "access_token" not in session:
+            return {"success": False, "error": "Not authenticated", "needs_auth": True}
+
+        yahoo = YahooAPI(session["access_token"])
+        team_logo = yahoo.get_team_wrapped(team_name)
+        return {"success": True, "data": {"team_logo": team_logo}}
+    except Exception as e:
+        logger.error(f"Error in get_team_wrapped: {e}")
+        return {"success": False, "error": str(e)}
+
+
 @app.route("/")
 def home():
     """
@@ -144,7 +160,12 @@ def get_team_list():
 
 @app.route("/team_wrapped/<team_name>")
 def get_team_wrapped(team_name):
-    return render_template("wrapped.html")
+    wrapped = get_team_wrapped(team_name)
+    return render_template(
+        "wrapped.html",
+        team_name=team_name,
+        team_logo=wrapped["data"]["team_logo"],
+    )
 
 
 if __name__ == "__main__":
