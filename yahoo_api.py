@@ -216,7 +216,7 @@ class YahooAPI:
             names_to_info[team]["nemesis"] = nemesis
 
             # Calculate Over/Under-Performer
-            percentage_improvement = round((total_points[team] / projected_points[team]) * 100, 2)
+            percentage_improvement = round((total_points[team] / projected_points[team] - 1) * 100, 2)
             names_to_info[team]["percentage_improvement"] = percentage_improvement
             names_to_info[team]["over_under_performer"] = "Over" if percentage_improvement > 0 else "Under"
 
