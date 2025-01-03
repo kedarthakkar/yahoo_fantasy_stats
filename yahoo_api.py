@@ -144,4 +144,11 @@ class YahooAPI:
                     "team_logo"
                 ]["url"]
 
+        standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
+        standings_response = requests.get(standings_url, headers=self.headers)
+        standings_response.raise_for_status()
+        standings_data = standings_response.json()
+        current_week = standings_data["fantasy_content"]["league"][0]["current_week"]
+        logger.info(standings_data)
+
         return names_to_logos[team_name]

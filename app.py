@@ -161,7 +161,6 @@ def get_team_list():
 @app.route("/team_wrapped/<team_name>")
 def get_team_wrapped(team_name):
     team_name = team_name.replace("-", " ")
-
     wrapped = get_fantasy_team_wrapped(team_name)
     return render_template(
         "wrapped.html",
