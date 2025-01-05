@@ -161,6 +161,10 @@ def get_stats():
 
 @app.route("/")
 def home():
+    session["access_token"] = "test"
+    yahoo_api = YahooAPI(session["access_token"]) 
+    logger.info(yahoo_api.test_token())
+    
     if "access_token" not in session:
         return render_template("team_list.html", needs_auth=True)
     
