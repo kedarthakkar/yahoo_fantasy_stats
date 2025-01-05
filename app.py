@@ -101,6 +101,7 @@ def refresh_access_token():
 
         token_info = response.json()
         session["access_token"] = token_info["access_token"]
+        return redirect(url_for("home"))
     except Exception as e:
         logger.error(f"Error in refresh_token: {e}")
         return "Refresh token exchange failed", 500
