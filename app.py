@@ -81,10 +81,12 @@ def callback():
         return str(e), 500
 
 
-def refresh_token():
+def refresh_access_token():
     """
     Exchange the refresh token for a new access token.
     """
+    logger.info(session.keys())
+    logger.info(session["refresh_token"])
     try:
         token_data = {
             "grant_type": "refresh_token",
@@ -192,7 +194,7 @@ def home():
     try:
         yahoo_api = YahooAPI(session["access_token"])
     except Exception as e:
-        refresh_token()
+        refresh_access_token()
     
     team_list = get_fantasy_team_list()
     return render_template(
