@@ -85,8 +85,6 @@ def refresh_access_token():
     """
     Exchange the refresh token for a new access token.
     """
-    logger.info(session.keys())
-    logger.info(session["refresh_token"])
     try:
         token_data = {
             "grant_type": "refresh_token",
@@ -197,6 +195,8 @@ def home():
         refresh_access_token()
     
     team_list = get_fantasy_team_list()
+    logger.info(session.keys())
+    logger.info(session["refresh_token"])
     return render_template(
         "team_list.html",
         team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
