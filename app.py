@@ -160,7 +160,7 @@ def get_stats():
 
 
 @app.route("/")
-def get_team_list():
+def home():
     if "access_token" not in session:
         return render_template("team_list.html", needs_auth=True)
     
