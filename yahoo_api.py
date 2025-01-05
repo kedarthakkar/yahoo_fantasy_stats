@@ -28,18 +28,6 @@ class YahooAPI:
         }
         self.league_key = self.get_league_key()
 
-    def test_token(self):
-        """
-        Test if the API token is still valid by making a simple API call.
-        Returns True if successful, False if unauthorized (401 error).
-        """
-        try:
-            url = f"{self.base_url}/users;use_login=1/games?format=json"
-            response = requests.get(url, headers=self.headers)
-            return response.status_code != 401
-        except requests.exceptions.RequestException:
-            return False
-
     def get_league_key(self):
         # Get all leagues for current year
         current_year = datetime.now().year

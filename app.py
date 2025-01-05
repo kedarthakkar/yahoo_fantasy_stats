@@ -81,6 +81,31 @@ def callback():
         return str(e), 500
 
 
+def refresh_token():
+    """
+    Exchange the refresh token for a new access token.
+    """
+    try:
+        token_data = {
+            "grant_type": "refresh_token",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "redirect_uri": REDIRECT_URI,
+            "refresh_token": session["refresh_token"],
+        }
+
+        response = requests.post(YAHOO_TOKEN_URL, data=token_data)
+        if response.status_code != 200:
+            logger.error(f"Token exchange failed: {response.text}")
+            return "Authentication failed", 500
+
+        token_info = response.json()
+        session["access_token"] = token_info["access_token"]
+    except Exception as e:
+        logger.error(f"Error in refresh_token: {e}")
+        return "Refresh token exchange failed", 500
+
+
 def get_fantasy_stats():
     """
     Call YahooAPI class to get fantasy season stats.
@@ -161,12 +186,13 @@ def get_stats():
 
 @app.route("/")
 def home():
-    session["access_token"] = "test"
-    yahoo_api = YahooAPI(session["access_token"]) 
-    logger.info(yahoo_api.test_token())
-    
     if "access_token" not in session:
         return render_template("team_list.html", needs_auth=True)
+
+    try:
+        yahoo_api = YahooAPI(session["access_token"])
+    except Exception as e:
+        refresh_token()
     
     team_list = get_fantasy_team_list()
     return render_template(
