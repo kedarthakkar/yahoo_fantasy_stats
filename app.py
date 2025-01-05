@@ -177,9 +177,9 @@ def get_team_wrapped(team_name):
     team_name = team_name.replace("-", " ")
     wrapped = get_fantasy_team_wrapped(team_name)
     if wrapped["data"]["over_under_performer"] == "Over":
-        badge_image = "images/overperformer.jpg"
+        badge_image = "images/overperformer.webp"
     else:
-        badge_image = "images/underperformer.jpg"
+        badge_image = "images/underperformer.webp"
     
     return render_template(
         "wrapped.html",
