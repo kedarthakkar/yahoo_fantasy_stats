@@ -21,11 +21,9 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 # OAuth configuration
 YAHOO_AUTH_URL = "https://api.login.yahoo.com/oauth2/request_auth"
 YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
-REDIRECT_URI = "https://fantasy-wrapped-e5f08855da35.herokuapp.com/callback"
+REDIRECT_URI = "https://fantasy-wrapped.com/callback"
 CLIENT_ID = os.getenv("CONSUMER_KEY")
 CLIENT_SECRET = os.getenv("CONSUMER_SECRET")
-
-# TODO: Properly handle refresh token (currently the application fails if the access token expires)
 
 
 @app.route("/auth")
@@ -196,8 +194,6 @@ def home():
         refresh_access_token()
     
     team_list = get_fantasy_team_list()
-    logger.info(session.keys())
-    logger.info(session["refresh_token"])
     return render_template(
         "team_list.html",
         team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
