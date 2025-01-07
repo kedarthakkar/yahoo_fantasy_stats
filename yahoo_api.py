@@ -53,7 +53,9 @@ class YahooAPI:
         teams_data = teams_response.json()
 
         # Get current week
-        standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
+        standings_url = (
+            f"{self.base_url}/league/{self.league_key}/standings?format=json"
+        )
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
@@ -124,40 +126,67 @@ class YahooAPI:
     def get_team_wrapped(self, team_name):
         """
         Returns relevant team information for the given team's wrapped summary.
-        - Team name and logo 
+        - Team name and logo
 
-        - Final standing 
+        - Final standing
         - Final record
         - Average fantasy points per week and rank of that average
-        
+
         - BBQ Chicken: Team which this team averaged the most points against on the season
-        - Nemesis: Team with the highest average fantasy points against this team on the season 
+        - Nemesis: Team with the highest average fantasy points against this team on the season
         - Over/Under-Performer: Percentage points scored by this team over/under their projected points for the season
         """
         names_to_info = {}
         total_points = {}
-        standings_url = f"{self.base_url}/league/{self.league_key}/standings?format=json"
+        standings_url = (
+            f"{self.base_url}/league/{self.league_key}/standings?format=json"
+        )
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
         standings_data = standings_response.json()
-        standings_data = standings_data["fantasy_content"]["league"][1]["standings"][0]["teams"]
+        standings_data = standings_data["fantasy_content"]["league"][1]["standings"][0][
+            "teams"
+        ]
         p = inflect.engine()
 
         for i in range(standings_data["count"]):
-            logo_url = standings_data[str(i)]["team"][0][5]["team_logos"][0]["team_logo"]["url"]
+            logo_url = standings_data[str(i)]["team"][0][5]["team_logos"][0][
+                "team_logo"
+            ]["url"]
             rank = int(standings_data[str(i)]["team"][2]["team_standings"]["rank"])
-            wins = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["wins"])
-            losses = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["losses"])
-            ties = int(standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"]["ties"])
+            wins = int(
+                standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"][
+                    "wins"
+                ]
+            )
+            losses = int(
+                standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"][
+                    "losses"
+                ]
+            )
+            ties = int(
+                standings_data[str(i)]["team"][2]["team_standings"]["outcome_totals"][
+                    "ties"
+                ]
+            )
 
             record_str = f"{wins}-{losses}-{ties}"
-            avg_points = round(float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"]) / (wins + losses + ties), 2)
-            total_points[standings_data[str(i)]["team"][0][2]["name"]] = total_points.get(standings_data[str(i)]["team"][0][2]["name"], 0) + float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"])
+            avg_points = round(
+                float(standings_data[str(i)]["team"][2]["team_standings"]["points_for"])
+                / (wins + losses + ties),
+                2,
+            )
+            total_points[standings_data[str(i)]["team"][0][2]["name"]] = (
+                total_points.get(standings_data[str(i)]["team"][0][2]["name"], 0)
+                + float(
+                    standings_data[str(i)]["team"][2]["team_standings"]["points_for"]
+                )
+            )
             names_to_info[standings_data[str(i)]["team"][0][2]["name"]] = {
                 "logo_url": logo_url,
                 "rank": p.ordinal(rank),
                 "record": record_str,
-                "avg_points": avg_points
+                "avg_points": avg_points,
             }
 
         projected_points = {}
@@ -179,7 +208,9 @@ class YahooAPI:
                 for i in range(matchup["0"]["teams"]["count"]):
                     curr_team = matchup["0"]["teams"][str(i)]["team"]
                     curr_team_name = curr_team[0][2]["name"]
-                    projected_points[curr_team_name] = projected_points.get(curr_team_name, 0) + float(curr_team[1]["team_projected_points"]["total"])
+                    projected_points[curr_team_name] = projected_points.get(
+                        curr_team_name, 0
+                    ) + float(curr_team[1]["team_projected_points"]["total"])
                     team_names.append(curr_team_name)
                     team_points.append(float(curr_team[1]["team_points"]["total"]))
 
@@ -195,25 +226,49 @@ class YahooAPI:
                 if team_names[0] not in adversaries[team_names[1]]:
                     adversaries[team_names[1]][team_names[0]] = {}
 
-                adversaries[team_names[0]][team_names[1]]["points_for"] = adversaries[team_names[0]][team_names[1]].get("points_for", []) + [team_points[0]]
-                adversaries[team_names[0]][team_names[1]]["points_against"] = adversaries[team_names[0]][team_names[1]].get("points_against", []) + [team_points[1]]
-                adversaries[team_names[1]][team_names[0]]["points_for"] = adversaries[team_names[1]][team_names[0]].get("points_for", []) + [team_points[1]]
-                adversaries[team_names[1]][team_names[0]]["points_against"] = adversaries[team_names[1]][team_names[0]].get("points_against", []) + [team_points[0]]
+                adversaries[team_names[0]][team_names[1]]["points_for"] = adversaries[
+                    team_names[0]
+                ][team_names[1]].get("points_for", []) + [team_points[0]]
+                adversaries[team_names[0]][team_names[1]]["points_against"] = (
+                    adversaries[team_names[0]][team_names[1]].get("points_against", [])
+                    + [team_points[1]]
+                )
+                adversaries[team_names[1]][team_names[0]]["points_for"] = adversaries[
+                    team_names[1]
+                ][team_names[0]].get("points_for", []) + [team_points[1]]
+                adversaries[team_names[1]][team_names[0]]["points_against"] = (
+                    adversaries[team_names[1]][team_names[0]].get("points_against", [])
+                    + [team_points[0]]
+                )
 
         for team in adversaries:
             # Calculate BBQ Chicken
-            bbq_chicken = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_for"]))
-            names_to_info[team]["bbq_chicken_avg_points"] = round(np.mean(adversaries[team][bbq_chicken]["points_for"]), 2)
+            bbq_chicken = max(
+                adversaries[team],
+                key=lambda x: np.mean(adversaries[team][x]["points_for"]),
+            )
+            names_to_info[team]["bbq_chicken_avg_points"] = round(
+                np.mean(adversaries[team][bbq_chicken]["points_for"]), 2
+            )
             names_to_info[team]["bbq_chicken"] = bbq_chicken
 
             # Calculate Nemesis
-            nemesis = max(adversaries[team], key=lambda x: np.mean(adversaries[team][x]["points_against"]))
-            names_to_info[team]["nemesis_avg_points"] = round(np.mean(adversaries[team][nemesis]["points_against"]), 2)
+            nemesis = max(
+                adversaries[team],
+                key=lambda x: np.mean(adversaries[team][x]["points_against"]),
+            )
+            names_to_info[team]["nemesis_avg_points"] = round(
+                np.mean(adversaries[team][nemesis]["points_against"]), 2
+            )
             names_to_info[team]["nemesis"] = nemesis
 
             # Calculate Over/Under-Performer
-            percentage_improvement = round((total_points[team] / projected_points[team] - 1) * 100, 2)
+            percentage_improvement = round(
+                (total_points[team] / projected_points[team] - 1) * 100, 2
+            )
             names_to_info[team]["percentage_improvement"] = abs(percentage_improvement)
-            names_to_info[team]["over_under_performer"] = "Over" if percentage_improvement > 0 else "Under"
+            names_to_info[team]["over_under_performer"] = (
+                "Over" if percentage_improvement > 0 else "Under"
+            )
 
         return names_to_info[team_name]

@@ -121,6 +121,7 @@ def get_fantasy_stats():
         logger.error(f"Error in get_fantasy_stats: {e}")
         return {"success": False, "error": str(e)}
 
+
 def get_fantasy_team_list():
     """
     Call YahooAPI class to get team list.
@@ -131,7 +132,10 @@ def get_fantasy_team_list():
 
         yahoo = YahooAPI(session["access_token"])
         team_names, team_logos = yahoo.get_team_list()
-        return {"success": True, "data": {"team_names": team_names, "team_logos": team_logos}}
+        return {
+            "success": True,
+            "data": {"team_names": team_names, "team_logos": team_logos},
+        }
     except Exception as e:
         logger.error(f"Error in get_team_list: {e}")
         return {"success": False, "error": str(e)}
@@ -148,7 +152,7 @@ def get_fantasy_team_wrapped(team_name):
         yahoo = YahooAPI(session["access_token"])
         team_info = yahoo.get_team_wrapped(team_name)
         return {
-            "success": True, 
+            "success": True,
             "data": {
                 "team_logo": team_info["logo_url"],
                 "team_rank": team_info["rank"],
@@ -160,7 +164,7 @@ def get_fantasy_team_wrapped(team_name):
                 "nemesis_avg_points": team_info["nemesis_avg_points"],
                 "percentage_improvement": team_info["percentage_improvement"],
                 "over_under_performer": team_info["over_under_performer"],
-            }
+            },
         }
     except Exception as e:
         logger.error(f"Error in get_team_wrapped: {e}")
@@ -192,7 +196,7 @@ def home():
         yahoo_api = YahooAPI(session["access_token"])
     except Exception as e:
         refresh_access_token()
-    
+
     team_list = get_fantasy_team_list()
     return render_template(
         "team_list.html",
@@ -209,7 +213,7 @@ def get_team_wrapped(team_name):
         badge_image = "images/overperformer.webp"
     else:
         badge_image = "images/underperformer.webp"
-    
+
     return render_template(
         "wrapped.html",
         team_name=team_name,
