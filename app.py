@@ -199,7 +199,7 @@ def home():
 
     team_list = get_fantasy_team_list()
     session["team_name_mapping"] = {
-        team_name: team_name.replace(" ", "-") for team_name in team_list["data"]["team_names"]
+        team_name.replace(" ", "-"): team_name for team_name in team_list["data"]["team_names"]
     }
     return render_template(
         "team_list.html",
