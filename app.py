@@ -198,6 +198,9 @@ def home():
         refresh_access_token()
 
     team_list = get_fantasy_team_list()
+    session["team_name_mapping"] = {
+        team_name: team_name.replace(" ", "-") for team_name in team_list["data"]["team_names"]
+    }
     return render_template(
         "team_list.html",
         team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
@@ -207,7 +210,9 @@ def home():
 
 @app.route("/team_wrapped/<team_name>")
 def get_team_wrapped(team_name):
-    team_name = team_name.replace("-", " ")
+    if "team_name_mapping" not in session:
+        team_name = team_name.replace("-", " ")
+    team_name = session["team_name_mapping"][team_name]
     wrapped = get_fantasy_team_wrapped(team_name)
     if wrapped["data"]["over_under_performer"] == "Over":
         badge_image = "images/overperformer.webp"
