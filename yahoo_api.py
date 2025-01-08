@@ -1,7 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, request, session
 import yahoo_fantasy_api as yfa
 import statistics
-from datetime import datetime
 import os
 import inflect
 import json
@@ -26,24 +25,6 @@ class YahooAPI:
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
         }
-        self.league_key = self.get_league_key()
-
-    def get_league_key(self):
-        # Get all leagues for current year
-        current_year = datetime.now().year
-        url = (
-            f"{self.base_url}/users;use_login=1/games;game_keys=nfl/leagues?format=json"
-        )
-        response = requests.get(url, headers=self.headers)
-        response.raise_for_status()
-        leagues_data = response.json()
-
-        # Get the first league ID (you might want to modify this to handle multiple leagues)
-        league_key = leagues_data["fantasy_content"]["users"]["0"]["user"][1]["games"][
-            "0"
-        ]["game"][1]["leagues"]["0"]["league"][0]["league_key"]
-
-        return league_key
 
     def get_league_list(self):
         url = f"{self.base_url}/users;use_login=1/games;game_keys=nfl/leagues?format=json"
@@ -66,68 +47,12 @@ class YahooAPI:
 
         return league_names, league_keys
 
-    def get_league_stats(self):
-        # Get teams in league
-        teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
-        teams_response = requests.get(teams_url, headers=self.headers)
-        teams_response.raise_for_status()
-        teams_data = teams_response.json()
-
-        # Get current week
-        standings_url = (
-            f"{self.base_url}/league/{self.league_key}/standings?format=json"
-        )
-        standings_response = requests.get(standings_url, headers=self.headers)
-        standings_response.raise_for_status()
-        standings_data = standings_response.json()
-        current_week = standings_data["fantasy_content"]["league"][0]["current_week"]
-
-        # Initialize team scores
-        teams = {}
-        for team in teams_data["fantasy_content"]["league"][1]["teams"].values():
-            if isinstance(team, dict):
-                team_name = team["team"][0][2]["name"]
-                teams[team_name] = []
-
-        # Get scores for each week
-        for week in range(1, int(current_week)):
-            scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
-            scores_response = requests.get(scoreboard_url, headers=self.headers)
-            scores_response.raise_for_status()
-            scores_data = scores_response.json()
-            matchups = scores_data["fantasy_content"]["league"][1]["scoreboard"]["0"][
-                "matchups"
-            ]
-            for i in range(int(matchups["count"])):
-                matchup = matchups[str(i)]["matchup"]
-
-                for team in matchup["0"]["teams"].values():
-                    if isinstance(team, dict):
-                        team_name = team["team"][0][2]["name"]
-                        team_score = float(team["team"][1]["team_points"]["total"])
-                        teams[team_name].append(team_score)
-
-        # Calculate statistics
-        results = {}
-        for team_name, scores in teams.items():
-            if len(scores) >= 2:  # Need at least 2 scores for standard deviation
-                results[team_name] = {
-                    "mean": statistics.mean(scores),
-                    "median": statistics.median(scores),
-                    "stdev": statistics.stdev(scores),
-                    "scores": scores,
-                    "max": max(scores),
-                    "min": min(scores),
-                }
-
-        return results
-
-    def get_team_list(self):
+    def get_team_list(self, league_key):
         """
         Returns a list of team names and a list of URLs of team logos.
         """
         # Get teams in league
-        teams_url = f"{self.base_url}/league/{self.league_key}/teams?format=json"
+        teams_url = f"{self.base_url}/league/{league_key}/teams?format=json"
         teams_response = requests.get(teams_url, headers=self.headers)
         teams_response.raise_for_status()
         teams_data = teams_response.json()
@@ -144,7 +69,7 @@ class YahooAPI:
 
         return team_names, team_logos
 
-    def get_team_wrapped(self, team_name):
+    def get_team_wrapped(self, team_name, league_key):
         """
         Returns relevant team information for the given team's wrapped summary.
         - Team name and logo
@@ -160,7 +85,7 @@ class YahooAPI:
         names_to_info = {}
         total_points = {}
         standings_url = (
-            f"{self.base_url}/league/{self.league_key}/standings?format=json"
+            f"{self.base_url}/league/{league_key}/standings?format=json"
         )
         standings_response = requests.get(standings_url, headers=self.headers)
         standings_response.raise_for_status()
@@ -214,7 +139,7 @@ class YahooAPI:
         adversaries = {}
 
         for week in range(1, (wins + losses + ties + 1)):
-            scoreboard_url = f"{self.base_url}/league/{self.league_key}/scoreboard;week={week}?format=json"
+            scoreboard_url = f"{self.base_url}/league/{league_key}/scoreboard;week={week}?format=json"
             scores_response = requests.get(scoreboard_url, headers=self.headers)
             scores_response.raise_for_status()
             scores_data = scores_response.json()

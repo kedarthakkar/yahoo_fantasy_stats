@@ -105,24 +105,7 @@ def refresh_access_token():
         return "Refresh token exchange failed", 500
 
 
-def get_fantasy_stats():
-    """
-    Call YahooAPI class to get fantasy season stats.
-    """
-    try:
-        if "access_token" not in session:
-            return {"success": False, "error": "Not authenticated", "needs_auth": True}
-
-        yahoo = YahooAPI(session["access_token"])
-        results = yahoo.get_league_stats()
-        return {"success": True, "data": results}
-
-    except Exception as e:
-        logger.error(f"Error in get_fantasy_stats: {e}")
-        return {"success": False, "error": str(e)}
-
-
-def get_fantasy_team_list():
+def get_fantasy_team_list(league_key):
     """
     Call YahooAPI class to get team list.
     """
@@ -131,7 +114,7 @@ def get_fantasy_team_list():
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
 
         yahoo = YahooAPI(session["access_token"])
-        team_names, team_logos = yahoo.get_team_list()
+        team_names, team_logos = yahoo.get_team_list(league_key)
         return {
             "success": True,
             "data": {"team_names": team_names, "team_logos": team_logos},
@@ -141,7 +124,7 @@ def get_fantasy_team_list():
         return {"success": False, "error": str(e)}
 
 
-def get_fantasy_team_wrapped(team_name):
+def get_fantasy_team_wrapped(team_name, league_key):
     """
     Call YahooAPI class to get the necessary information for the wrapped summary.
     """
@@ -150,7 +133,7 @@ def get_fantasy_team_wrapped(team_name):
             return {"success": False, "error": "Not authenticated", "needs_auth": True}
 
         yahoo = YahooAPI(session["access_token"])
-        team_info = yahoo.get_team_wrapped(team_name)
+        team_info = yahoo.get_team_wrapped(team_name, league_key)
         return {
             "success": True,
             "data": {
@@ -171,24 +154,8 @@ def get_fantasy_team_wrapped(team_name):
         return {"success": False, "error": str(e)}
 
 
-@app.route("/stats")
-def stats():
-    """
-    Renders the home page, with authentication flow if the user is not authenticated.
-    """
-    if "access_token" not in session:
-        return render_template("index.html", needs_auth=True)
-    return render_template("index.html")
-
-
-@app.route("/api/stats")
-def get_stats():
-    stats = get_fantasy_stats()
-    return jsonify(stats)
-
-
-@app.route("/league_list")
-def get_league_list():
+@app.route("/")
+def home():
     if "access_token" not in session:
         return render_template("league_list.html", needs_auth=True)
 
@@ -198,8 +165,6 @@ def get_league_list():
         refresh_access_token()
 
     league_names, league_keys = yahoo_api.get_league_list()
-    league_names = league_names * 4
-    league_keys = league_keys * 4
     return render_template(
         "league_list.html",
         league_info=zip(league_names, league_keys),
@@ -214,35 +179,14 @@ def team_list(league_key):
 
     try:
         yahoo_api = YahooAPI(session["access_token"])
-        yahoo_api.league_key = league_key
     except Exception as e:
         refresh_access_token()
 
-    team_list = get_fantasy_team_list()
+    team_list = get_fantasy_team_list(league_key)
     session["team_name_mapping"] = {
         team_name.replace(" ", "-"): team_name for team_name in team_list["data"]["team_names"]
     }
-    return render_template(
-        "team_list.html",
-        team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
-        needs_auth=False,
-    )
-
-
-@app.route("/")
-def home():
-    if "access_token" not in session:
-        return render_template("team_list.html", needs_auth=True)
-
-    try:
-        yahoo_api = YahooAPI(session["access_token"])
-    except Exception as e:
-        refresh_access_token()
-
-    team_list = get_fantasy_team_list()
-    session["team_name_mapping"] = {
-        team_name.replace(" ", "-"): team_name for team_name in team_list["data"]["team_names"]
-    }
+    session["league_key"] = league_key
     return render_template(
         "team_list.html",
         team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
@@ -255,7 +199,7 @@ def get_team_wrapped(team_name):
     if "team_name_mapping" not in session:
         team_name = team_name.replace("-", " ")
     team_name = session["team_name_mapping"][team_name]
-    wrapped = get_fantasy_team_wrapped(team_name)
+    wrapped = get_fantasy_team_wrapped(team_name, session["league_key"])
     if wrapped["data"]["over_under_performer"] == "Over":
         badge_image = "images/overperformer.webp"
     else:
