@@ -184,7 +184,7 @@ def team_list(league_key):
 
     team_list = get_fantasy_team_list(league_key)
     session["team_name_mapping"] = {
-        team_name.replace(" ", "-"): team_name for team_name in team_list["data"]["team_names"]
+        team_name.replace(" ", "-").replace("/", "%20"): team_name for team_name in team_list["data"]["team_names"]
     }
     session["league_key"] = league_key
     return render_template(
@@ -197,8 +197,10 @@ def team_list(league_key):
 @app.route("/team_wrapped/<team_name>")
 def get_team_wrapped(team_name):
     if "team_name_mapping" not in session:
-        team_name = team_name.replace("-", " ")
+        team_name = team_name.replace("-", " ").replace("%20", "/")
     team_name = session["team_name_mapping"][team_name]
+    if "league_key" not in session:
+        league_key = yahoo_api.get_league_key()
     wrapped = get_fantasy_team_wrapped(team_name, session["league_key"])
     if wrapped["data"]["over_under_performer"] == "Over":
         badge_image = "images/overperformer.webp"

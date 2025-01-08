@@ -26,6 +26,19 @@ class YahooAPI:
             "Accept": "application/json",
         }
 
+    def get_league_key(self):
+        url = (
+            f"{self.base_url}/users;use_login=1/games;game_keys=nfl/leagues?format=json"
+        )
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+        leagues_data = response.json()
+        # Get the first league ID
+        league_key = leagues_data["fantasy_content"]["users"]["0"]["user"][1]["games"][
+            "0"
+        ]["game"][1]["leagues"]["0"]["league"][0]["league_key"]
+        return league_key
+
     def get_league_list(self):
         url = f"{self.base_url}/users;use_login=1/games;game_keys=nfl/leagues?format=json"
         response = requests.get(url, headers=self.headers)
