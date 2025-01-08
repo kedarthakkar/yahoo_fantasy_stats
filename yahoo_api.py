@@ -55,15 +55,16 @@ class YahooAPI:
             "0"
         ]["game"][1]["leagues"]
 
+        league_names = []
         league_keys = []
 
         for i in range(leagues_object["count"]):
             curr_league_key = leagues_object[str(i)]["league"][0]["league_key"]
+            curr_league_name = leagues_object[str(i)]["league"][0]["name"]
+            league_names.append(curr_league_name)
             league_keys.append(curr_league_key)
 
-        logger.info(league_keys)
-
-        return league_keys
+        return league_names, league_keys
 
     def get_league_stats(self):
         # Get teams in league

@@ -187,6 +187,25 @@ def get_stats():
     return jsonify(stats)
 
 
+@app.route("/league_list")
+def get_league_list():
+    if "access_token" not in session:
+        return render_template("league_list.html", needs_auth=True)
+
+    try:
+        yahoo_api = YahooAPI(session["access_token"])
+    except Exception as e:
+        refresh_access_token()
+
+    league_names, league_keys = yahoo_api.get_league_list()
+
+    return render_template(
+        "league_list.html",
+        league_info=zip(league_names, league_keys),
+        needs_auth=False,
+    )
+
+
 @app.route("/")
 def home():
     if "access_token" not in session:

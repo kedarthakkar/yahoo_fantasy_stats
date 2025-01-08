@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yahoo Fantasy Football Wrapped</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Select Your Fantasy League</h1>
+
+        {% if needs_auth %}
+        <div id="auth-required" class="text-center py-8">
+            <p class="text-lg mb-4">Please authenticate with Yahoo to view your stats</p>
+            <a href="/auth" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Login with Yahoo
+            </a>
+        </div>
+        <div id="error" class="hidden text-red-600 text-center py-8">
+        </div>
+        {% else %}
+        <div class="team-list" id="teamList">
+            <div class="grid grid-cols-1 gap-4">
+                {% for name, key in league_info %}
+                <div class="team-item flex items-center p-4 bg-white shadow rounded hover:bg-gray-100 cursor-pointer" 
+                     onclick="window.location.href='/team_list/{{ key }}'">
+                    <img src="{{ logo }}" alt="{{ name }} logo" class="team-logo w-16 h-16 rounded-full mr-4">
+                    <div class="team-name text-lg font-medium">{{ name }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
