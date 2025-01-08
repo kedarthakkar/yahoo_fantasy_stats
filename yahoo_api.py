@@ -37,7 +37,6 @@ class YahooAPI:
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
         leagues_data = response.json()
-        logger.info(leagues_data)
 
         # Get the first league ID (you might want to modify this to handle multiple leagues)
         league_key = leagues_data["fantasy_content"]["users"]["0"]["user"][1]["games"][
@@ -45,6 +44,26 @@ class YahooAPI:
         ]["game"][1]["leagues"]["0"]["league"][0]["league_key"]
 
         return league_key
+
+    def get_league_list(self):
+        url = f"{self.base_url}/users;use_login=1/games;game_keys=nfl/leagues?format=json"
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+        leagues_data = response.json()
+
+        leagues_object = leagues_data["fantasy_content"]["users"]["0"]["user"][1]["games"][
+            "0"
+        ]["game"][1]["leagues"]
+
+        league_keys = []
+
+        for i in range(leagues_object["count"]):
+            curr_league_key = leagues_object[str(i)]["league"][0]["league_key"]
+            league_keys.append(curr_league_key)
+
+        logger.info(league_keys)
+
+        return league_keys
 
     def get_league_stats(self):
         # Get teams in league

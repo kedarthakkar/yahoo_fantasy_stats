@@ -194,6 +194,7 @@ def home():
 
     try:
         yahoo_api = YahooAPI(session["access_token"])
+        league_keys = yahoo_api.get_league_list()
     except Exception as e:
         refresh_access_token()
 
