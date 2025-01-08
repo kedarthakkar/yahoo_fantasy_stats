@@ -37,6 +37,7 @@ class YahooAPI:
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
         leagues_data = response.json()
+        logger.info(leagues_data)
 
         # Get the first league ID (you might want to modify this to handle multiple leagues)
         league_key = leagues_data["fantasy_content"]["users"]["0"]["user"][1]["games"][
