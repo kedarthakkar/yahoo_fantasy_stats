@@ -206,6 +206,28 @@ def get_league_list():
     )
 
 
+@app.route("/team_list/<league_key>")
+def team_list(league_key):
+    if "access_token" not in session:
+        return render_template("team_list.html", needs_auth=True)
+
+    try:
+        yahoo_api = YahooAPI(session["access_token"])
+        yahoo_api.league_key = league_key
+    except Exception as e:
+        refresh_access_token()
+
+    team_list = get_fantasy_team_list()
+    session["team_name_mapping"] = {
+        team_name.replace(" ", "-"): team_name for team_name in team_list["data"]["team_names"]
+    }
+    return render_template(
+        "team_list.html",
+        team_info=zip(team_list["data"]["team_names"], team_list["data"]["team_logos"]),
+        needs_auth=False,
+    )
+
+
 @app.route("/")
 def home():
     if "access_token" not in session:
@@ -213,7 +235,6 @@ def home():
 
     try:
         yahoo_api = YahooAPI(session["access_token"])
-        league_keys = yahoo_api.get_league_list()
     except Exception as e:
         refresh_access_token()
 
