@@ -198,7 +198,8 @@ def get_league_list():
         refresh_access_token()
 
     league_names, league_keys = yahoo_api.get_league_list()
-
+    league_names = league_names * 4
+    league_keys = league_keys * 4
     return render_template(
         "league_list.html",
         league_info=zip(league_names, league_keys),
